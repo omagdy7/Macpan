@@ -23,7 +23,7 @@ columns = sheet_width // sprite_width
 
 # Set the center position of the circle
 center = [320, 240] # Center of the window
-radius = 16
+radius = 0
 
 # Set the circle's velocity
 dx = 0
@@ -61,34 +61,28 @@ def get_sprites():
             sprites.append(new_sprite_surface)
 
 # Checks collision with walls
-def check_collision(circle_center_x, circle_center_y, dx, dy):
+def check_collision(pos_x, pos_y, dx, dy):
     # edges of the circle
-    upper_circle_point = circle_center_y + radius
-    lower_circle_point = circle_center_y - radius
-    right_circle_point = circle_center_x + radius
-    left_circle_point = circle_center_x - radius
-    return upper_circle_point + dy > height or lower_circle_point + dy < 0 or right_circle_point + dx > width or left_circle_point + dx < 0 
+    # upper_circle_point = circle_center_y
+    # lower_circle_point = circle_center_y
+    # right_circle_point = circle_center_x
+    # left_circle_point = circle_center_x
+    print(pos_x, pos_y)
+    return pos_y + sprite_height + dy > height or pos_y + dy < 0 or pos_x + sprite_width + dx > width or pos_x + dx < 0 
     
 get_sprites()
 
 counter = 0
 
-def draw_player(center, direction):
+def draw_player(pos, direction):
     if direction == DIRECTION.UP:
-        screen.blit(pygame.transform.rotate(sprites[counter // 5], 270), center)
+        screen.blit(pygame.transform.rotate(sprites[counter // 5], 270), pos)
     elif direction == DIRECTION.DOWN:
-        screen.blit(pygame.transform.rotate(sprites[counter // 5], 90), center)
+        screen.blit(pygame.transform.rotate(sprites[counter // 5], 90), pos)
     elif direction == DIRECTION.RIGHT:
-        screen.blit(sprites[counter // 5], center)
+        screen.blit(sprites[counter // 5], pos)
     elif direction == DIRECTION.LEFT:
-        screen.blit(pygame.transform.flip(sprites[counter // 5], True, False), center)
-
-
-
-
-    
-
-
+        screen.blit(pygame.transform.flip(sprites[counter // 5], True, False), pos)
 
 
 sprite_direction = DIRECTION.LEFT
