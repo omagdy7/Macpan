@@ -31,7 +31,7 @@ class Player():
         self.x = Settings.settings.width // 2;
         self.y = Settings.settings.height // 2;
         self.sprite = get_sprites(sprite_sheet)
-        self.speed = 5
+        self.speed = 10
         self.direction = DIRECTION.LEFT
 
     def draw(self, screen, counter):
