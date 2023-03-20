@@ -36,7 +36,6 @@ class Player():
 
     def draw(self, screen, counter):
         pos = (self.x, self.y)
-        print(self.direction, DIRECTION.UP)
         if self.direction == DIRECTION.UP:
             screen.blit(pygame.transform.rotate(self.sprite[counter // 5], 270), pos)
         elif self.direction == DIRECTION.DOWN:

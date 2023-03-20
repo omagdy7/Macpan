@@ -1,6 +1,7 @@
 import Player
 from Direction import DIRECTION
 import settings as Settings
+import map as Map
 import pygame
 
 class Game():
@@ -39,6 +40,7 @@ class Game():
         def check_collision(dx, dy):
             return player.y + sprite_height + dy > Settings.settings.height or player.y + dy < 0 or player.x + sprite_width + dx > Settings.settings.width or player.x + dx < 0 
 
+        map = Map.Map()
         # Main game loop
         running = True
 
@@ -77,7 +79,6 @@ class Game():
                         dy = 0 # Necssarry to move only horizontal or vertical
 
 
-            # print(player.direction)
             # Update the circle's position and checking for collisions
             if not check_collision(dx, dy):
                 player.x += dx
@@ -85,6 +86,7 @@ class Game():
 
             screen.fill((0, 0, 0)) # Clear the screen
 
+            map.draw_map(screen)
             player.draw(screen, counter)
 
             # Update the screen
