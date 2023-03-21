@@ -17,10 +17,19 @@ python3 macpan.py
 - [X] Setup collision with walls
 - [ ] Load the proper sprites for the map
 - [ ] Add the ghosts in the game
-- [ ] Develop an algorithm to make the ghosts find pacman in the map(BFS, A*)
 - [ ] Setup the sprite animation for the ghosts
+- [ ] Develop an algorithm to make the ghosts find pacman in the map(BFS, A*)
+- [ ] Add the Algorithm for Blinky (Normal A*)
+- [ ] Add the Algorithm for Pinky (Normal A* + 4 spaces ahead of pacman)
+- [ ] Add the Algorithm for Inky (Ambush)
+- [ ] Add the Algorithm for Clyde (Same as Blinky excepts when he gets 8 tiles close to pacman he retreats, So he is basically useless)
 
 ## Optional
 - [ ] Setup a menu for the game
+- [ ] Setup a simple score system
 - [ ] Setup a proper sfx/audio for the game
 - [ ] Add powerups
+- [ ] Add firghtening mode for the ghosts
+
+# EXTRA BONUS
+- [ ] Make a nueral network agent that fully plays the game alone using reinforcment learning and PyTorch
