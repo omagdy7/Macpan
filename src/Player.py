@@ -28,15 +28,14 @@ def get_sprites(sprite_sheet) -> List:
 
 class Player():
     def __init__(self, sprite_sheet):
-        self.x = Settings.settings.width // 2;
-        self.y = Settings.settings.height // 2;
+        self.x = 450
+        self.y = 663
         self.sprite = get_sprites(sprite_sheet)
-        self.speed = 5
+        self.speed = 10
         self.direction = DIRECTION.LEFT
 
     def draw(self, screen, counter):
         pos = (self.x, self.y)
-        print(self.direction, DIRECTION.UP)
         if self.direction == DIRECTION.UP:
             screen.blit(pygame.transform.rotate(self.sprite[counter // 5], 270), pos)
         elif self.direction == DIRECTION.DOWN:
