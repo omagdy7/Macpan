@@ -29,18 +29,28 @@ class Game():
 
         clock = pygame.time.Clock()
 
-        # Sprite sheet for pacman
-        sprite_sheet = pygame.image.load('../assets/pacman_left_sprite.png').convert_alpha();
-
         sprite_width, sprite_height = 32, 32
 
+
+        map = Map.Map()
+
+        grid_x = Settings.settings.width // len(map.maze[0])
+        grid_y = (Settings.settings.height - 50) // len(map.maze)
 
 
         # Checks collision with walls
         def check_collision(dx, dy):
-            return player.y + sprite_height + dy > Settings.settings.height or player.y + dy < 0 or player.x + sprite_width + dx > Settings.settings.width or player.x + dx < 0 
+            print(grid_x, grid_y)
+            x = int((player.x + dx) / grid_x)
+            y = int((player.y + dy) / grid_y)
+            print(x, y)
+            print(map.maze[x][y])
+            is_dot = map.maze[x][y] == Map.D
+            is_big_dot = map.maze[x][y] == Map.BD
+            is_free = map.maze[x][y] == 0
+            return not (is_dot or is_free or is_big_dot)
 
-        map = Map.Map()
+
         # Main game loop
         running = True
 

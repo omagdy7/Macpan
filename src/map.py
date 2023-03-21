@@ -1,130 +1,122 @@
-# the map is 2d array of with size (160, 120)
-# 0 -> free
-# 1 -> vertical line
-# 2 -> 
-
 import pygame
+import math
 import settings as Settings
 
 
-U = 1
+
+H = 1
+V = 2
 D = 4
-L = 8
-R = 2
+BD = 8
+TR = 16
+TL = 32
+BL = 64
+BR = 128
+G = 256
 
-LU = L | U
-LD = L | D
-RU = R | U
-RD = R | D
-
-M = 11
+PI = math.pi
 
 
 class Map():
-    """
-    0 -> free
-    1 -> U
-    4 -> D
-    8 -> L
-    2 -> R
-    3 -> RU
-    6 -> RD
-    9 -> LU
-    5 -> LD
-    """
     def __init__(self):
-        self.map = [
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 9, U, U, U, U, U, U, U, U, U, U, U, U, U, U, U, U, U, U, U, U, U, 3, 0, 9, U, U, U, U, U, U, U, U, U, U, U, U, U, U, U, U, U, U, U, U, U, U, 3, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 9, U, U, 3, 0, 0, 0, 0, 9, U, U, U, U, 3, 0, 0, 0, 0, R, 0, L, 0, 0, 0, 0, 9, U, U, U, U, 3, 0, 0, 0, 0, 9, U, U, 3, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, L, 0, 0, 0, 0, 0, 0, 0, L, 0, 0, 0, 0, R, 0, 0, 0, 0, R, 0, L, 0, 0, 0, 0, L, 0, 0, 0, 0, R, 0, 0, 0, 0, L, 0, 0, R, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 5, D, D, 6, 0, 0, 0, 0, 5, D, D, D, D, 6, 0, 0, 0, 0, R, D, L, 0, 0, 0, 0, 5, D, D, D, D, 6, 0, 0, 0, 0, 5, D, D, 6, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 9, U, U, 3, 0, 0, R, U, L, 0, 0, 0, 0, 9, U, U, U, U, U, U, U, U, U, U, U, 3, 0, 0, 0, 0, R, 9, 0, 0, 0, 9, U, U, 3, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 5, D, D, 6, 0, 0, R, 0, L, 0, 0, 0, 0, U, U, U, U, U, 3, 0, 9, U, U, U, U, U, 0, 0, 0, 0, R, L, 0, 0, 0, 5, D, D, 6, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, D, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0, D, D, D, D, D, D, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, D, D, D, D, D, 3, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0, 3, 0, 0, 0, 0, R, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, L, 0, 0, 0, 0, 0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0, U, U, U, U, U, U, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, U, U, U, U, U, 9, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-
-            [0, U, U, U, U, U, U, 0, 0, 0, 0, R, D, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 3, 0, 0, 0, 0, 0, U, U, U, U, U, U, U, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, D, D, D, D, D, D, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, D, D, D, D, D, D, D, 0],
-
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, L, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, M, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, R, 0],
-            [0, 5, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, 6, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        self.maze = [
+            [TL, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, TR],
+            [V, TL, H, H, H, H, H, H, H, H, H, H, H, H, TR, TL, H, H, H, H, H, H, H, H, H, H, H, H, TR, V],
+            [V, V, D, D, D, D, D, D, D, D, D, D, D, D, V, V, D, D, D, D, D, D, D, D, D, D, D, D, V, V],
+            [V, V, D, TL, H, H, TR, D, TL, H, H, H, TR, D, V, V, D, TL, H, H, H, TR, D, TL, H, H, TR, D, V, V],
+            [V, V, BD, V, 0, 0, V, D, V, 0, 0, 0, V, D, V, V, D, V, 0, 0, 0, V, D, V, 0, 0, V, BD, V, V],
+            [V, V, D, BL, H, H, BR, D, BL, H, H, H, BR, D, BL, BR, D, BL, H, H, H, BR, D, BL, H, H, BR, D, V, V],
+            [V, V, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, V, V],
+            [V, V, D, TL, H, H, TR, D, TL, TR, D, TL, H, H, H, H, H, H, TR, D, TL, TR, D, TL, H, H, TR, D, V, V],
+            [V, V, D, BL, H, H, BR, D, V, V, D, BL, H, H, TR, TL, H, H, BR, D, V, V, D, BL, H, H, BR, D, V, V],
+            [V, V, D, D, D, D, D, D, V, V, D, D, D, D, V, V, D, D, D, D, V, V, D, D, D, D, D, D, V, V],
+            [V, BL, H, H, H, H, TR, D, V, BL, H, H, TR, 0, V, V, 0, TL, H, H, BR, V, D, TL, H, H, H, H, BR, V],
+            [V, 0, 0, 0, 0, 0, V, D, V, TL, H, H, BR, 0, BL, BR, 0, BL, H, H, TR, V, D, V, 0, 0, 0, 0, 0, V],
+            [V, 0, 0, 0, 0, 0, V, D, V, V, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, V, V, D, V, 0, 0, 0, 0, 0, V],
+            [BR, 0, 0, 0, 0, 0, V, D, V, V, 0, TL, H, H, G, G, H, H, TR, 0, V, V, D, V, 0, 0, 0, 0, 0, BL],
+            [H, H, H, H, H, H, BR, D, BL, BR, 0, V, 0, 0, 0, 0, 0, 0, V, 0, BL, BR, D, BL, H, H, H, H, H, H],
+            [0, 0, 0, 0, 0, 0, 0, D, 0, 0, 0, V, 0, 0, 0, 0, 0, 0, V, 0, 0, 0, D, 0, 0, 0, 0, 0, 0, 0],
+            [H, H, H, H, H, H, TR, D, TL, TR, 0, V, 0, 0, 0, 0, 0, 0, V, 0, TL, TR, D, TL, H, H, H, H, H, H],
+            [TR, 0, 0, 0, 0, 0, V, D, V, V, 0, BL, H, H, H, H, H, H, BR, 0, V, V, D, V, 0, 0, 0, 0, 0, TL],
+            [V, 0, 0, 0, 0, 0, V, D, V, V, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, V, V, D, V, 0, 0, 0, 0, 0, V],
+            [V, 0, 0, 0, 0, 0, V, D, V, V, 0, TL, H, H, H, H, H, H, TR, 0, V, V, D, V, 0, 0, 0, 0, 0, V],
+            [V, TL, H, H, H, H, BR, D, BL, BR, 0, BL, H, H, TR, TL, H, H, BR, 0, BL, BR, D, BL, H, H, H, H, TR, V],
+            [V, V, D, D, D, D, D, D, D, D, D, D, D, D, V, V, D, D, D, D, D, D, D, D, D, D, D, D, V, V],
+            [V, V, D, TL, H, H, TR, D, TL, H, H, H, TR, D, V, V, D, TL, H, H, H, TR, D, TL, H, H, TR, D, V, V],
+            [V, V, D, BL, H, TR, V, D, BL, H, H, H, BR, D, BL, BR, D, BL, H, H, H, BR, D, V, TL, H, BR, D, V, V],
+            [V, V, BD, D, D, V, V, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, V, V, D, D, BD, V, V],
+            [V, BL, H, TR, D, V, V, D, TL, TR, D, TL, H, H, H, H, H, H, TR, D, TL, TR, D, V, V, D, TL, H, BR, V],
+            [V, TL, H, BR, D, BL, BR, D, V, V, D, BL, H, H, TR, TL, H, H, BR, D, V, V, D, BL, BR, D, BL, H, TR, V],
+            [V, V, D, D, D, D, D, D, V, V, D, D, D, D, V, V, D, D, D, D, V, V, D, D, D, D, D, D, V, V],
+            [V, V, D, TL, H, H, H, H, BR, BL, H, H, TR, D, V, V, D, TL, H, H, BR, BL, H, H, H, H, TR, D, V, V],
+            [V, V, D, BL, H, H, H, H, H, H, H, H, BR, D, BL, BR, D, BL, H, H, H, H, H, H, H, H, BR, D, V, V],
+            [V, V, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, V, V],
+            [V, BL, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, BR, V],
+            [BL, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, BR]
         ]
-        self.line_vertical = Settings.settings.width // len(self.map[0])
-        self.line_horizontal = Settings.settings.height // len(self.map)
-        self.line_color = (0, 0, 150)
-        self.line_stroke = 6
+        self.dot_color = (255, 255, 255) # white
+        self.small_dot_radius = 4
+        self.big_dot_radius = 8
+        self.line_color = (0, 0, 255) # Blue
+        self.line_vertical = Settings.settings.height // len(self.maze)
+        self.line_horizontal = Settings.settings.width // len(self.maze[0])
+        self.line_stroke = 3
 
     def consturct_map(self):
         pass
 
 
     def draw_wall(self, screen, flag , pos):
-        if flag & U:
-            pos1 = pos
-            pos2 = (pos[0] + self.line_vertical, pos[1])
+        if flag & V:
+            pos1 = (pos[0] + self.line_vertical * 0.5, pos[1])
+            pos2 = (pos1[0], pos1[1] + self.line_horizontal)
+            pygame.draw.line(screen, self.line_color, pos1, pos2, self.line_stroke)
+        if flag & H:
+            pos1 = (pos[0], pos[1] + self.line_vertical * 0.5)
+            pos2 = (pos1[0] + self.line_horizontal, pos1[1])
             pygame.draw.line(screen, self.line_color, pos1, pos2, self.line_stroke)
         if flag & D:
-            pos1 = (pos[0], pos[1] + self.line_horizontal)
-            pos2 = (pos[0] + self.line_vertical, pos[1] + self.line_horizontal)
-            pygame.draw.line(screen, self.line_color, pos1, pos2, self.line_stroke)
-        if flag & R:
-            pos1 = (pos[0] + self.line_vertical, pos[1])
-            pos2 = (pos[0] + self.line_vertical, pos[1] + self.line_horizontal)
-            pygame.draw.line(screen, self.line_color, pos1, pos2, self.line_stroke)
-        if flag & L:
-            pos1 = pos
-            pos2 = (pos[0], pos[1] + self.line_horizontal)
-            pygame.draw.line(screen, self.line_color, pos1, pos2, self.line_stroke)
+            pos1 = (pos[0] + self.line_vertical * 0.5, pos[1] + self.line_horizontal * 0.5)
+            pygame.draw.circle(screen, self.dot_color, pos1, self.small_dot_radius)
+        if flag & BD:
+            pos1 = (pos[0] + self.line_vertical * 0.5, pos[1] + self.line_horizontal * 0.5)
+            pygame.draw.circle(screen, self.dot_color, pos1, self.big_dot_radius)
+        if flag & TR:
+            pos1 = (pos[0] - self.line_vertical * 0.5, pos[1] + self.line_horizontal * 0.5)
+            arc_rect = pygame.Rect(pos1[0], pos1[1], self.line_vertical, self.line_horizontal)
+            pygame.draw.arc(screen, self.line_color, arc_rect, 0, PI / 2, self.line_stroke)
+        if flag & TL:
+            pos1 = (pos[0] + self.line_vertical * 0.5, pos[1] + self.line_horizontal * 0.5)
+            arc_rect = pygame.Rect(pos1[0], pos1[1], self.line_vertical, self.line_horizontal)
+            pygame.draw.arc(screen, self.line_color, arc_rect, PI / 2, PI, self.line_stroke)
+        if flag & BL:
+            pos1 = (pos[0] + self.line_vertical * 0.5, pos[1] - self.line_horizontal * 0.5)
+            arc_rect = pygame.Rect(pos1[0], pos1[1], self.line_vertical, self.line_horizontal)
+            pygame.draw.arc(screen, self.line_color, arc_rect, PI, 3*PI / 2, self.line_stroke)
+        if flag & BR:
+            pos1 = (pos[0] - self.line_vertical * 0.5, pos[1] - self.line_horizontal * 0.5)
+            arc_rect = pygame.Rect(pos1[0], pos1[1], self.line_vertical, self.line_horizontal)
+            pygame.draw.arc(screen, self.line_color, arc_rect, 3*PI / 2, PI * 2, self.line_stroke)
+
+
+
 
             
-            
-        
-
     def draw_map(self, screen):
-        rows = len(self.map)
-        cols = len(self.map[0])
-        # ofs = Settings.settings.width // cols
-        # line_color = (0, 0, 150)
-        # line_stroke = 6
+        rows = len(self.maze)
+        cols = len(self.maze[0])
         for i in range(0, rows):
             for j in range(cols):
                 pos = (j * self.line_horizontal, i * self.line_vertical)
-                self.draw_wall(screen, self.map[i][j], pos)
+                self.draw_wall(screen, self.maze[i][j], pos)
+
+
+
+
+
+
+
+
+
+
+

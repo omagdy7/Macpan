@@ -28,8 +28,8 @@ def get_sprites(sprite_sheet) -> List:
 
 class Player():
     def __init__(self, sprite_sheet):
-        self.x = Settings.settings.width // 2;
-        self.y = Settings.settings.height // 2;
+        self.x = 450
+        self.y = 663
         self.sprite = get_sprites(sprite_sheet)
         self.speed = 10
         self.direction = DIRECTION.LEFT
