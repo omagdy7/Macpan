@@ -15,7 +15,8 @@ python3 macpan.py
 - [X] Replace the yellow circle with a pacman sprite
 - [X] Setup the sprite animation for pacman
 - [X] Setup collision with walls
-- [ ] Load the proper sprites for the map
+- [X] Load the proper sprites for the map
+- [ ] Setup collision with the map
 - [ ] Add the ghosts in the game
 - [ ] Setup the sprite animation for the ghosts
 - [ ] Develop an algorithm to make the ghosts find pacman in the map(BFS, A*)
