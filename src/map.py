@@ -3,7 +3,6 @@ import math
 import settings as Settings
 
 
-
 H = 1
 V = 2
 D = 4
@@ -20,7 +19,7 @@ PI = math.pi
 class Map():
     def __init__(self):
         self.maze = [
-            [TL, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, TR],
+            [TL, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H,H, H, H, H, H, H, H, H, H, H, H, H, H, TR],
             [V, TL, H, H, H, H, H, H, H, H, H, H, H, H, TR, TL, H, H, H, H, H, H, H, H, H, H, H, H, TR, V],
             [V, V, D, D, D, D, D, D, D, D, D, D, D, D, V, V, D, D, D, D, D, D, D, D, D, D, D, D, V, V],
             [V, V, D, TL, H, H, TR, D, TL, H, H, H, TR, D, V, V, D, TL, H, H, H, TR, D, TL, H, H, TR, D, V, V],
@@ -53,55 +52,68 @@ class Map():
             [V, V, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, V, V],
             [V, BL, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, BR, V],
             [BL, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, BR]
-        ]
-        self.dot_color = (255, 255, 255) # white
+        ] 
+        self.dot_color = (255, 255, 255)  # white
         self.small_dot_radius = 4
         self.big_dot_radius = 8
-        self.line_color = (0, 0, 255) # Blue
+        self.line_color = (0, 0, 255)  # Blue
         self.line_vertical = Settings.settings.height // len(self.maze)
         self.line_horizontal = Settings.settings.width // len(self.maze[0])
-        self.line_stroke = 3
+        self.line_stroke = 1
 
     def consturct_map(self):
         pass
 
-
-    def draw_wall(self, screen, flag , pos):
+    def draw_wall(self, screen, flag, pos):
         if flag & V:
             pos1 = (pos[0] + self.line_vertical * 0.5, pos[1])
             pos2 = (pos1[0], pos1[1] + self.line_horizontal)
-            pygame.draw.line(screen, self.line_color, pos1, pos2, self.line_stroke)
+            pygame.draw.line(screen, self.line_color,
+                             pos1, pos2, self.line_stroke)
         if flag & H:
             pos1 = (pos[0], pos[1] + self.line_vertical * 0.5)
             pos2 = (pos1[0] + self.line_horizontal, pos1[1])
-            pygame.draw.line(screen, self.line_color, pos1, pos2, self.line_stroke)
+            pygame.draw.line(screen, self.line_color,
+                             pos1, pos2, self.line_stroke)
         if flag & D:
-            pos1 = (pos[0] + self.line_vertical * 0.5, pos[1] + self.line_horizontal * 0.5)
-            pygame.draw.circle(screen, self.dot_color, pos1, self.small_dot_radius)
+            pos1 = (pos[0] + self.line_vertical * 0.5,
+                    pos[1] + self.line_horizontal * 0.5)
+            pygame.draw.circle(screen, self.dot_color,
+                               pos1, self.small_dot_radius)
         if flag & BD:
-            pos1 = (pos[0] + self.line_vertical * 0.5, pos[1] + self.line_horizontal * 0.5)
-            pygame.draw.circle(screen, self.dot_color, pos1, self.big_dot_radius)
+            pos1 = (pos[0] + self.line_vertical * 0.5,
+                    pos[1] + self.line_horizontal * 0.5)
+            pygame.draw.circle(screen, self.dot_color,
+                               pos1, self.big_dot_radius)
         if flag & TR:
-            pos1 = (pos[0] - self.line_vertical * 0.5, pos[1] + self.line_horizontal * 0.5)
-            arc_rect = pygame.Rect(pos1[0], pos1[1], self.line_vertical, self.line_horizontal)
-            pygame.draw.arc(screen, self.line_color, arc_rect, 0, PI / 2, self.line_stroke)
+            pos1 = (pos[0] - self.line_vertical * 0.5,
+                    pos[1] + self.line_horizontal * 0.5)
+            arc_rect = pygame.Rect(
+                pos1[0], pos1[1], self.line_vertical, self.line_horizontal)
+            pygame.draw.arc(screen, self.line_color, arc_rect,
+                            0, PI / 2, self.line_stroke)
         if flag & TL:
-            pos1 = (pos[0] + self.line_vertical * 0.5, pos[1] + self.line_horizontal * 0.5)
-            arc_rect = pygame.Rect(pos1[0], pos1[1], self.line_vertical, self.line_horizontal)
-            pygame.draw.arc(screen, self.line_color, arc_rect, PI / 2, PI, self.line_stroke)
+            pos1 = (pos[0] + self.line_vertical * 0.5,
+                    pos[1] + self.line_horizontal * 0.5)
+            arc_rect = pygame.Rect(
+                pos1[0], pos1[1], self.line_vertical, self.line_horizontal)
+            pygame.draw.arc(screen, self.line_color, arc_rect,
+                            PI / 2, PI, self.line_stroke)
         if flag & BL:
-            pos1 = (pos[0] + self.line_vertical * 0.5, pos[1] - self.line_horizontal * 0.5)
-            arc_rect = pygame.Rect(pos1[0], pos1[1], self.line_vertical, self.line_horizontal)
-            pygame.draw.arc(screen, self.line_color, arc_rect, PI, 3*PI / 2, self.line_stroke)
+            pos1 = (pos[0] + self.line_vertical * 0.5,
+                    pos[1] - self.line_horizontal * 0.5)
+            arc_rect = pygame.Rect(
+                pos1[0], pos1[1], self.line_vertical, self.line_horizontal)
+            pygame.draw.arc(screen, self.line_color, arc_rect,
+                            PI, 3*PI / 2, self.line_stroke)
         if flag & BR:
-            pos1 = (pos[0] - self.line_vertical * 0.5, pos[1] - self.line_horizontal * 0.5)
-            arc_rect = pygame.Rect(pos1[0], pos1[1], self.line_vertical, self.line_horizontal)
-            pygame.draw.arc(screen, self.line_color, arc_rect, 3*PI / 2, PI * 2, self.line_stroke)
+            pos1 = (pos[0] - self.line_vertical * 0.5,
+                    pos[1] - self.line_horizontal * 0.5)
+            arc_rect = pygame.Rect(
+                pos1[0], pos1[1], self.line_vertical, self.line_horizontal)
+            pygame.draw.arc(screen, self.line_color, arc_rect,
+                            3*PI / 2, PI * 2, self.line_stroke)
 
-
-
-
-            
     def draw_map(self, screen):
         rows = len(self.maze)
         cols = len(self.maze[0])
@@ -109,14 +121,4 @@ class Map():
             for j in range(cols):
                 pos = (j * self.line_horizontal, i * self.line_vertical)
                 self.draw_wall(screen, self.maze[i][j], pos)
-
-
-
-
-
-
-
-
-
-
-
+                # pygame.draw.rect(screen, 'red', (pos[0], pos[1], 32, 32), 2)

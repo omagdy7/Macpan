@@ -1,8 +1,11 @@
+from pygame.mouse import get_pressed
 import Player
 from Direction import DIRECTION
 import settings as Settings
 import map as Map
 import pygame
+import math
+
 
 class Game():
     def __init__(self):
@@ -13,14 +16,16 @@ class Game():
         pygame.init()
 
         # Set the dimensions of the window
-        screen = pygame.display.set_mode((Settings.settings.width, Settings.settings.height))
+        screen = pygame.display.set_mode(
+            (Settings.settings.width, Settings.settings.height))
 
         # Sprite sheet for pacman
-        sprite_sheet = pygame.image.load('../assets/pacman_left_sprite.png').convert_alpha();
+        sprite_sheet = pygame.image.load(
+            '../assets/pacman_left_sprite.png').convert_alpha()
 
         player = Player.Player(sprite_sheet)
 
-        # Set the circle's velocity
+        # Set the pacman velocity
         dx = 0
         dy = 0
 
@@ -29,31 +34,45 @@ class Game():
 
         clock = pygame.time.Clock()
 
-        sprite_width, sprite_height = 32, 32
 
+        maze = Map.Map()
 
-        map = Map.Map()
-
-        grid_x = Settings.settings.width // len(map.maze[0])
-        grid_y = (Settings.settings.height - 50) // len(map.maze)
-
+        # length of the map grid size
+        grid_x = Settings.settings.width // len(maze.maze[0])
+        grid_y = Settings.settings.height // len(maze.maze)
 
         # Checks collision with walls
+
+        # checks if the current position of pacman is either a dot, big dot or free
+        def is_valid(x, y):
+            is_dot = maze.maze[y][x] == Map.D
+            is_big_dot = maze.maze[y][x] == Map.BD
+            is_free = maze.maze[y][x] == 0
+            return (is_dot or is_free or is_big_dot)
+
+
+        # checks collision with pacman and obstacles returns false if there is a collision and true otherwise
         def check_collision(dx, dy):
-            print(grid_x, grid_y)
-            x = int((player.x + dx) / grid_x)
-            y = int((player.y + dy) / grid_y)
-            print(x, y)
-            print(map.maze[x][y])
-            is_dot = map.maze[x][y] == Map.D
-            is_big_dot = map.maze[x][y] == Map.BD
-            is_free = map.maze[x][y] == 0
-            return not (is_dot or is_free or is_big_dot)
+            direct_x = [1, 0, -1, 0, 1, 1, -1, -1]
+            direct_y = [0, 1, 0, -1, -1, 1, -1, 1]
+
+            for i in range(len(direct_x)):
+                nx = (player.x + dx) + direct_x[i] * 14
+                ny = (player.y + dy) + direct_y[i] * 14
+                x = nx // grid_x
+                y = ny // grid_y
+                if not is_valid(x, y):
+                    return False
+
+            return True
+
+
+
+
 
 
         # Main game loop
         running = True
-
 
         while running:
             # setting game fps
@@ -65,6 +84,12 @@ class Game():
             else:
                 counter = 0
 
+            screen.fill((0, 0, 0))  # Clear the screen
+
+            # Temporary values for delta_x and delta_y in the position of pacman
+            tx = dx
+            ty = dy
+
             # Handling events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -73,35 +98,61 @@ class Game():
                     # Move the circle based on the pressed key
                     if event.key == pygame.K_w:
                         player.direction = DIRECTION.UP
-                        dy = -player.speed
-                        dx = 0 # Necssarry to move only horizontal or vertical
+                        ty = -player.speed
+                        tx = 0  # Necssarry to move only horizontal or vertical
                     elif event.key == pygame.K_s:
                         player.direction = DIRECTION.DOWN
-                        dy = player.speed
-                        dx = 0 # Necssarry to move only horizontal or vertical
+                        ty = player.speed
+                        tx = 0  # Necssarry to move only horizontal or vertical
                     elif event.key == pygame.K_a:
                         player.direction = DIRECTION.LEFT
-                        dx = -player.speed
-                        dy = 0 # Necssarry to move only horizontal or vertical
+                        tx = -player.speed
+                        ty = 0  # Necssarry to move only horizontal or vertical
                     elif event.key == pygame.K_d:
                         player.direction = DIRECTION.RIGHT
-                        dx = player.speed
-                        dy = 0 # Necssarry to move only horizontal or vertical
+                        tx = player.speed
+                        ty = 0  # Necssarry to move only horizontal or vertical
+
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_w]:
+                ty = -player.speed
+                tx = 0
+            elif keys[pygame.K_s]:
+                ty = player.speed
+                tx = 0
+            elif keys[pygame.K_a]:
+                tx = -player.speed
+                ty = 0
+            elif keys[pygame.K_d]:
+                tx = player.speed
+                ty = 0
 
 
-            # Update the circle's position and checking for collisions
-            if not check_collision(dx, dy):
+            # if tx and ty doesn't lead to colliding change the current dx and dy to them and other wise
+            # let pacman move in his previous direction
+            if check_collision(tx, ty):
+                dx = tx
+                dy = ty
+
+            if dx < 0:
+                player.direction = DIRECTION.LEFT
+            elif dx > 0:
+                player.direction = DIRECTION.RIGHT
+            elif dy < 0:
+                player.direction = DIRECTION.UP
+            elif dy > 0:
+                player.direction = DIRECTION.DOWN
+
+            if check_collision(dx, dy):
                 player.x += dx
                 player.y += dy
 
-            screen.fill((0, 0, 0)) # Clear the screen
 
-            map.draw_map(screen)
+            maze.draw_map(screen)
             player.draw(screen, counter)
 
             # Update the screen
             pygame.display.flip()
-
 
         # Quit Pygame
         pygame.quit()
