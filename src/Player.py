@@ -30,8 +30,8 @@ def get_sprites(sprite_sheet) -> List:
 
 class Player():
     def __init__(self, sprite_sheet):
-        self.x = 75
-        self.y = 75
+        self.x = 30 * 17 - 15
+        self.y = 30 * 25 - 15
         self.sprite = get_sprites(sprite_sheet)
         self.speed = 5
         self.direction = DIRECTION.LEFT
