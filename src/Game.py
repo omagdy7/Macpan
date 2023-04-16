@@ -25,7 +25,10 @@ class Game():
             '../assets/pacman_left_sprite.png').convert_alpha()
 
         player = Player.Player(sprite_sheet)
-        ghost = Ghost.Ghost()
+        inky = Ghost.Ghost("green", 75, 75)
+        pinky = Ghost.Ghost("cyan", 27 * 30, 30 * 30 + 15)
+        clyde = Ghost.Ghost("red", 27 * 30 + 15, 75)
+        winky = Ghost.Ghost("purple", 75, 30 * 30 + 15)
 
         # Set the pacman velocity
         dx = 0
@@ -149,10 +152,16 @@ class Game():
                 player.y += dy
 
 
-            ghost.move(maze.maze, (player.x, player.y))
+            inky.move(maze.maze, (player.x, player.y))
+            pinky.move(maze.maze, (player.x, player.y))
+            winky.move(maze.maze, (player.x, player.y))
+            clyde.move(maze.maze, (player.x, player.y))
             maze.draw_map(screen)
             player.draw(screen, counter)
-            ghost.draw(screen)
+            inky.draw(screen)
+            pinky.draw(screen)
+            winky.draw(screen)
+            clyde.draw(screen)
 
             # Update the screen
             pygame.display.flip()
