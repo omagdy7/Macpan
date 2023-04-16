@@ -33,7 +33,7 @@ class Player():
         self.x = 30 * 17 - 15
         self.y = 30 * 25 - 15
         self.sprite = get_sprites(sprite_sheet)
-        self.speed = 5
+        self.speed = 6
         self.direction = DIRECTION.LEFT
 
     def draw(self, screen, counter):

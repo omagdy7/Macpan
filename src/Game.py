@@ -1,5 +1,6 @@
 from pygame.mouse import get_pressed
 import Player
+import Ghost
 from Direction import DIRECTION
 import settings as Settings
 import map as Map
@@ -24,6 +25,10 @@ class Game():
             '../assets/pacman_left_sprite.png').convert_alpha()
 
         player = Player.Player(sprite_sheet)
+        blinky = Ghost.Ghost("red", 75, 75)
+        pinky = Ghost.Ghost("pink", 27 * 30, 30 * 30 + 15)
+        inky = Ghost.Ghost("orange", 75, 30 * 30 + 15)
+        clyde = Ghost.Ghost("cyan", 27 * 30 + 15, 75)
 
         # Set the pacman velocity
         dx = 0
@@ -41,6 +46,8 @@ class Game():
         grid_x = Settings.settings.width // len(maze.maze[0])
         grid_y = Settings.settings.height // len(maze.maze)
 
+        print(grid_x, grid_y)
+
         # Checks collision with walls
 
         # checks if the current position of pacman is either a dot, big dot or free
@@ -48,6 +55,8 @@ class Game():
             is_dot = maze.maze[y][x] == Map.D
             is_big_dot = maze.maze[y][x] == Map.BD
             is_free = maze.maze[y][x] == 0
+            if is_dot or is_big_dot:
+                maze.maze[y][x] = 0
             return (is_dot or is_free or is_big_dot)
 
 
@@ -65,11 +74,6 @@ class Game():
                     return False
 
             return True
-
-
-
-
-
 
         # Main game loop
         running = True
@@ -148,8 +152,16 @@ class Game():
                 player.y += dy
 
 
+            blinky.move(maze.maze, (player.x, player.y))
+            pinky.move(maze.maze, (player.x, player.y))
+            inky.move(maze.maze, (player.x, player.y))
+            clyde.move(maze.maze, (player.x, player.y))
             maze.draw_map(screen)
             player.draw(screen, counter)
+            blinky.draw(screen)
+            pinky.draw(screen)
+            inky.draw(screen)
+            clyde.draw(screen)
 
             # Update the screen
             pygame.display.flip()
