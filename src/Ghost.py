@@ -1,9 +1,7 @@
-from typing import List
 import pygame
 import math
 from Direction import DIRECTION
 import map as Map
-import random
 
 class Ghost():
     def __init__(self, color, x, y):
@@ -69,15 +67,7 @@ class Ghost():
                 if self.check_collision(nx, ny, 30, 30, maze):
                     ret[i] = self.heuristic((nx, ny), pacman_pos)
 
-        print("--------------------")
-
         min_idx = ret.index(min(ret))
-        print(f"last_move: {self.last_move}, current_move: {min_idx}")
-        x1 = self.x + dx[2] * self.speed
-        y1 = self.y + dy[2] * self.speed
-        x2 = self.x + dx[0] * self.speed
-        y2 = self.y + dy[0] * self.speed
-        print(f"hl = {self.heuristic((x1, y1), pacman_pos)}, h2 = {self.heuristic((x2, y2), pacman_pos)}")
         return min_idx
 
 
