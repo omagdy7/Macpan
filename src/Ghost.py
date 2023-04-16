@@ -42,7 +42,7 @@ class Ghost():
         return True
 
 
-    def get_next_move(self, pacman_pos, maze):
+    def get_next_move(self, pacman, maze):
         dx = [1, 0, -1, 0]
         dy = [0, 1, 0, -1]
 
@@ -58,26 +58,20 @@ class Ghost():
             forbidden = 0
         if self.last_move == 3:
             forbidden = 1
-
         
         for i in range(len(dx)):
             if i != forbidden:
                 nx = self.x + dx[i] * self.speed
                 ny = self.y + dy[i] * self.speed
                 if self.check_collision(nx, ny, 30, 30, maze):
-                    ret[i] = self.heuristic((nx, ny), pacman_pos)
+                    ret[i] = self.heuristic((nx, ny), (pacman.x, pacman.y))
 
         min_idx = ret.index(min(ret))
         return min_idx
 
 
-
-
-
-
-
-    def move(self, maze, player_pos):
-        min_idx = self.get_next_move(player_pos, maze)
+    def move(self, maze, pacman):
+        min_idx = self.get_next_move(pacman, maze)
         dx = [1, 0, -1, 0]
         dy = [0, 1, 0, -1]
         new_dx = dx[min_idx] * self.speed

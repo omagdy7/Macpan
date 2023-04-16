@@ -1,6 +1,8 @@
 from pygame.mouse import get_pressed
 import Player
 import Ghost
+from pinky import Pinky
+from blinky import Blinky
 from Direction import DIRECTION
 import settings as Settings
 import map as Map
@@ -25,8 +27,8 @@ class Game():
             '../assets/pacman_left_sprite.png').convert_alpha()
 
         player = Player.Player(sprite_sheet)
-        blinky = Ghost.Ghost("red", 75, 75)
-        pinky = Ghost.Ghost("pink", 27 * 30, 30 * 30 + 15)
+        blinky = Blinky(75, 75)
+        pinky = Pinky(27 * 30, 30 * 30 + 15)
         inky = Ghost.Ghost("orange", 75, 30 * 30 + 15)
         clyde = Ghost.Ghost("cyan", 27 * 30 + 15, 75)
 
@@ -152,16 +154,16 @@ class Game():
                 player.y += dy
 
 
-            blinky.move(maze.maze, (player.x, player.y))
-            pinky.move(maze.maze, (player.x, player.y))
-            inky.move(maze.maze, (player.x, player.y))
-            clyde.move(maze.maze, (player.x, player.y))
+            blinky.move(maze.maze, player)
+            pinky.move(maze.maze, player)
+            # inky.move(maze.maze, player)
+            # clyde.move(maze.maze, player)
             maze.draw_map(screen)
             player.draw(screen, counter)
             blinky.draw(screen)
             pinky.draw(screen)
-            inky.draw(screen)
-            clyde.draw(screen)
+            # inky.draw(screen)
+            # clyde.draw(screen)
 
             # Update the screen
             pygame.display.flip()
