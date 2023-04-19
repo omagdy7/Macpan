@@ -1,13 +1,12 @@
-from pygame.mouse import get_pressed
 import Player
-import Ghost
 from pinky import Pinky
 from blinky import Blinky
+from inky import Inky
+from clyde import Clyde
 from Direction import DIRECTION
 import settings as Settings
 import map as Map
 import pygame
-import math
 
 
 class Game():
@@ -25,12 +24,20 @@ class Game():
         # Sprite sheet for pacman
         sprite_sheet = pygame.image.load(
             '../assets/pacman_left_sprite.png').convert_alpha()
+        blinky_sprite = pygame.image.load(
+            '../assets/blinky.png').convert_alpha()
+        pinky_sprite = pygame.image.load(
+            '../assets/pinky.png').convert_alpha()
+        clyde_sprite = pygame.image.load(
+            '../assets/clyde.png').convert_alpha()
+        inky_sprite = pygame.image.load(
+            '../assets/inky.png').convert_alpha()
 
         player = Player.Player(sprite_sheet)
-        blinky = Blinky(75, 75)
-        pinky = Pinky(27 * 30, 30 * 30 + 15)
-        inky = Ghost.Ghost("orange", 75, 30 * 30 + 15)
-        clyde = Ghost.Ghost("cyan", 27 * 30 + 15, 75)
+        blinky = Blinky(blinky_sprite,75, 75)
+        pinky = Pinky(pinky_sprite, 27 * 30, 30 * 30 + 15)
+        inky = Inky(inky_sprite, 75, 30 * 30 + 15)
+        clyde = Clyde(clyde_sprite, 27 * 30 + 15, 75)
 
         # Set the pacman velocity
         dx = 0
@@ -48,7 +55,6 @@ class Game():
         grid_x = Settings.settings.width // len(maze.maze[0])
         grid_y = Settings.settings.height // len(maze.maze)
 
-        print(grid_x, grid_y)
 
         # Checks collision with walls
 
@@ -59,6 +65,8 @@ class Game():
             is_free = maze.maze[y][x] == 0
             if is_dot or is_big_dot:
                 maze.maze[y][x] = 0
+                # munch_sound.play(1, fade_ms=1)
+
             return (is_dot or is_free or is_big_dot)
 
 
@@ -77,12 +85,20 @@ class Game():
 
             return True
 
-        # Main game loop
+        pygame.mixer.music.load('../assets/sfx/game_start.wav')
+        siren_sound = pygame.mixer.Sound('../assets/sfx/siren_1.wav')
+        munch_sound = pygame.mixer.Sound('../assets/sfx/munch_1.wav')
+
+        pygame.mixer.music.play()
+        siren_sound.play(-1)
         running = True
 
+        # Main game loop
         while running:
             # setting game fps
             clock.tick(Settings.settings.fps)
+
+
 
             # counter logic for cycling between pacman different sprites
             if counter < 19:
@@ -102,6 +118,7 @@ class Game():
                     running = False
                 elif event.type == pygame.KEYDOWN:
                     # Move the circle based on the pressed key
+                    # if not pygame.mixer.get_busy():
                     if event.key == pygame.K_w:
                         player.direction = DIRECTION.UP
                         ty = -player.speed
@@ -120,6 +137,7 @@ class Game():
                         ty = 0  # Necssarry to move only horizontal or vertical
 
             keys = pygame.key.get_pressed()
+            # if not pygame.mixer.get_busy():
             if keys[pygame.K_w]:
                 ty = -player.speed
                 tx = 0
@@ -156,14 +174,17 @@ class Game():
 
             blinky.move(maze.maze, player)
             pinky.move(maze.maze, player)
-            # inky.move(maze.maze, player)
-            # clyde.move(maze.maze, player)
+            inky.move(maze.maze, player)
+            clyde.move(maze.maze, player)
+
             maze.draw_map(screen)
+
             player.draw(screen, counter)
             blinky.draw(screen)
             pinky.draw(screen)
-            # inky.draw(screen)
-            # clyde.draw(screen)
+            inky.draw(screen)
+            clyde.draw(screen)
+
 
             # Update the screen
             pygame.display.flip()

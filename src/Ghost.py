@@ -1,12 +1,14 @@
 import pygame
 import math
+from util import get_sprites
 from Direction import DIRECTION
 import map as Map
 
 class Ghost():
-    def __init__(self, color, x, y):
+    def __init__(self,sprite_sheet, color, x, y):
         self.x = x
         self.y = y
+        self.sprite = get_sprites(sprite_sheet)
         self.color = color
         self.last_move = 3
         self.speed = 3
@@ -82,7 +84,5 @@ class Ghost():
 
     def draw(self, screen):
         radius = 30 // 2
-        pos = (self.x , self.y)
-        pygame.draw.circle(screen, self.color, pos, radius)
-
-
+        pos = (self.x - radius , self.y - radius)
+        screen.blit(self.sprite[0], pos)

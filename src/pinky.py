@@ -5,8 +5,8 @@ import math
 from Ghost import Ghost
 
 class Pinky(Ghost):
-    def __init__(self, x, y):
-        super().__init__("pink", x, y)
+    def __init__(self, sprite_sheet, x, y):
+        super().__init__(sprite_sheet,"pink", x, y)
 
 
 
@@ -59,7 +59,6 @@ class Pinky(Ghost):
             forbidden = 1
 
         new_target = self.get_four_tiles_ahead_of_pacman(target)
-        print((target.x, target.y), new_target)
         
         for i in range(len(dx)):
             if i != forbidden:
