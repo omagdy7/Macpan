@@ -1,8 +1,8 @@
 from typing_extensions import override
-from Direction import DIRECTION
+from direction import DIRECTION
 from settings import settings
 import math
-from Ghost import Ghost
+from ghost import Ghost
 
 class Pinky(Ghost):
     def __init__(self, sprite_sheet, x, y):
@@ -10,7 +10,6 @@ class Pinky(Ghost):
 
 
     def get_four_tiles_ahead_of_pacman(self, pacman):
-        print("Before", pacman.x, pacman.y)
         if pacman.direction == DIRECTION.UP:
             new_target = (pacman.x - 30 * 4, pacman.y - 30 * 4)
             if self.in_bounds(new_target):
@@ -55,7 +54,6 @@ class Pinky(Ghost):
             forbidden = 1
 
         new_target = self.get_four_tiles_ahead_of_pacman(target)
-        print("After: ", new_target)
         
         for i in range(len(dx)):
             if i != forbidden:

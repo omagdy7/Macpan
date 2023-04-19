@@ -1,4 +1,4 @@
-from Ghost import Ghost
+from ghost import Ghost
 
 class Inky(Ghost):
     def __init__(self, sprite_sheet, x, y):

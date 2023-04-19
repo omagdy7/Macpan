@@ -3,6 +3,12 @@ from util import get_sprites
 from settings import settings
 import map as Map
 
+dx = [1, 0, -1, 0]
+dy = [0, 1, 0, -1]
+
+inv_dir = [2, 3, 0, 1]
+sprite_sheet = [2, 0, 3, 1]
+
 class Ghost():
     def __init__(self,sprite_sheet, color, x, y):
         self.x = x
@@ -46,21 +52,10 @@ class Ghost():
 
 
     def get_next_move(self, pacman, maze):
-        dx = [1, 0, -1, 0]
-        dy = [0, 1, 0, -1]
 
         ret = len(dx) * [math.inf]
 
-        forbidden = 0
-
-        if self.last_move == 0:
-            forbidden = 2
-        if self.last_move == 1:
-            forbidden = 3
-        if self.last_move == 2:
-            forbidden = 0
-        if self.last_move == 3:
-            forbidden = 1
+        forbidden = inv_dir[self.last_move]
         
         for i in range(len(dx)):
             if i != forbidden:
@@ -75,8 +70,6 @@ class Ghost():
 
     def move(self, maze, pacman):
         min_idx = self.get_next_move(pacman, maze)
-        dx = [1, 0, -1, 0]
-        dy = [0, 1, 0, -1]
         new_dx = dx[min_idx] * self.speed
         new_dy = dy[min_idx] * self.speed
         self.x += new_dx
@@ -86,11 +79,4 @@ class Ghost():
     def draw(self, screen):
         radius = 30 // 2
         pos = (self.x - radius , self.y - radius)
-        if self.last_move == 0:
-            screen.blit(self.sprite[2], pos)
-        elif self.last_move == 1:
-            screen.blit(self.sprite[0], pos)
-        elif self.last_move == 2:
-            screen.blit(self.sprite[3], pos)
-        elif self.last_move == 3:
-            screen.blit(self.sprite[1], pos)
+        screen.blit(self.sprite[sprite_sheet[self.last_move]], pos)
