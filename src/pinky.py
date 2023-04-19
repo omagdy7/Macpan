@@ -9,12 +9,8 @@ class Pinky(Ghost):
         super().__init__(sprite_sheet,"pink", x, y)
 
 
-
-    def in_bounds(self, pos):
-        return pos[0] >= 0 and pos[1] >= 0 and pos[0] < settings.width and pos[1] < settings.height
-
-
     def get_four_tiles_ahead_of_pacman(self, pacman):
+        print("Before", pacman.x, pacman.y)
         if pacman.direction == DIRECTION.UP:
             new_target = (pacman.x - 30 * 4, pacman.y - 30 * 4)
             if self.in_bounds(new_target):
@@ -59,13 +55,14 @@ class Pinky(Ghost):
             forbidden = 1
 
         new_target = self.get_four_tiles_ahead_of_pacman(target)
+        print("After: ", new_target)
         
         for i in range(len(dx)):
             if i != forbidden:
                 nx = self.x + dx[i] * self.speed
                 ny = self.y + dy[i] * self.speed
                 if self.check_collision(nx, ny, 30, 30, maze):
-                    ret[i] = self.heuristic((nx, ny), new_target)
+                    ret[i] = self.heuristic((nx, ny), new_target[0], new_target[1])
 
         min_idx = ret.index(min(ret))
         return min_idx

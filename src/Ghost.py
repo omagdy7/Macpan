@@ -1,7 +1,6 @@
-import pygame
 import math
 from util import get_sprites
-from Direction import DIRECTION
+from settings import settings
 import map as Map
 
 class Ghost():
@@ -13,10 +12,12 @@ class Ghost():
         self.last_move = 3
         self.speed = 3
 
-    def heuristic(self, pacman_pos, next_pos):
-        return abs(next_pos[0] - pacman_pos[0]) + abs(next_pos[1] - pacman_pos[1])
+    def in_bounds(self, pos):
+        (x, y) = pos
+        return (x >= 0) and (y >= 0) and (x < settings.width - 30) and (y < settings.height)
 
-
+    def heuristic(self, next_pos, tx, ty):
+        return abs(next_pos[0] - tx) + abs(next_pos[1] - ty)
 
 
     # checks if the current position of pacman is either a dot, big dot or free
@@ -38,7 +39,7 @@ class Ghost():
             py = ny + direct_y[i] * 14
             x = px // gx
             y = py // gy
-            if not self.is_valid(maze, x, y):
+            if  not self.in_bounds((px, py)) or not self.is_valid(maze, x, y):
                 return False
 
         return True
@@ -66,7 +67,7 @@ class Ghost():
                 nx = self.x + dx[i] * self.speed
                 ny = self.y + dy[i] * self.speed
                 if self.check_collision(nx, ny, 30, 30, maze):
-                    ret[i] = self.heuristic((nx, ny), (pacman.x, pacman.y))
+                    ret[i] = self.heuristic((nx, ny), pacman.x, pacman.y)
 
         min_idx = ret.index(min(ret))
         return min_idx
@@ -85,4 +86,11 @@ class Ghost():
     def draw(self, screen):
         radius = 30 // 2
         pos = (self.x - radius , self.y - radius)
-        screen.blit(self.sprite[0], pos)
+        if self.last_move == 0:
+            screen.blit(self.sprite[2], pos)
+        elif self.last_move == 1:
+            screen.blit(self.sprite[0], pos)
+        elif self.last_move == 2:
+            screen.blit(self.sprite[3], pos)
+        elif self.last_move == 3:
+            screen.blit(self.sprite[1], pos)
