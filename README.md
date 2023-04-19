@@ -24,8 +24,8 @@ python3 macpan.py
 - [X] Develop an algorithm to make the ghosts find pacman in the map(BFS, A*)
 - [X] Add the Algorithm for Blinky (Normal A*)
 - [X] Add the Algorithm for Pinky (Normal A* + 4 spaces ahead of pacman)
-- [ ] Add the ghosts in the game
-- [ ] Setup the sprite animation for the ghosts
+- [X] Add the ghosts in the game
+- [X] Setup the sprite animation for the ghosts
 - [ ] Add the Algorithm for Inky (Ambush)
 - [ ] Add the Algorithm for Clyde (Same as Blinky excepts when he gets 8 tiles close to pacman he retreats, So he is basically useless)
 
