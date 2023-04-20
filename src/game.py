@@ -61,11 +61,11 @@ class Game():
 
         pygame.mixer.music.play()
         siren_sound.play(-1)
-        running = True
+        is_game_over = [False]
 
 
         # Main game loop
-        while running:
+        while not is_game_over[0]:
             # setting game fps
             clock.tick(settings.fps)
 
@@ -84,7 +84,7 @@ class Game():
             # Handling events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    running = False
+                    is_game_over = False
                 elif event.type == pygame.KEYDOWN:
                     # Move the circle based on the pressed key
                     if event.key == pygame.K_w:
@@ -143,13 +143,14 @@ class Game():
             if player.check_collision(maze, dx, dy, TILE_WIDTH, TILE_HEIGHT):
                 player.x += dx
                 player.y += dy
+                player.x %= 900
 
 
             # Move ghosts
-            blinky.move(maze.maze, player)
-            pinky.move(maze.maze, player)
-            inky.move(maze.maze, player)
-            clyde.move(maze.maze, player)
+            blinky.move(maze.maze, player, screen, is_game_over)
+            pinky.move(maze.maze, player, screen, is_game_over)
+            inky.move(maze.maze, player, screen, is_game_over)
+            clyde.move(maze.maze, player, screen, is_game_over)
 
             # Draw the map on each frame
             maze.draw_map(screen)

@@ -1,9 +1,10 @@
+import pygame
 import math
 from util import get_sprites
 from settings import settings
 import map as Map
 
-dx = [1, 0, -1, 0]
+dx = [1, 0, -1, 0] # right, down, left, up
 dy = [0, 1, 0, -1]
 
 inv_dir = [2, 3, 0, 1]
@@ -15,7 +16,7 @@ class Ghost():
         self.y = y
         self.sprite = get_sprites(sprite_sheet)
         self.color = color
-        self.last_move = 3
+        self.last_move = 3 # this represents the direction based on the dx, dy arrays
         self.speed = 3
 
     def in_bounds(self, pos):
@@ -28,10 +29,12 @@ class Ghost():
 
     # checks if the current position of pacman is either a dot, big dot or free
     def is_valid(self, maze, x, y):
-        is_dot = maze[y][x] == Map.D
-        is_big_dot = maze[y][x] == Map.BD
-        is_free = maze[y][x] == 0
-        return (is_dot or is_free or is_big_dot)
+        if x >= 0 and x < 30:
+            is_dot = maze[y][x] == Map.D
+            is_big_dot = maze[y][x] == Map.BD
+            is_free = maze[y][x] == 0
+            return (is_dot or is_free or is_big_dot)
+        return True
 
 
     # checks collision with pacman and obstacles returns false if there is a collision and true otherwise
@@ -45,38 +48,45 @@ class Ghost():
             py = ny + direct_y[i] * 14
             x = px // gx
             y = py // gy
-            if  not self.in_bounds((px, py)) or not self.is_valid(maze, x, y):
+            if  not self.is_valid(maze, x, y):
                 return False
 
         return True
 
 
-    def get_next_move(self, pacman, maze):
+    def get_next_move(self, pacman, maze, screen):
 
         ret = len(dx) * [math.inf]
 
         forbidden = inv_dir[self.last_move]
         
         for i in range(len(dx)):
-            if i != forbidden:
-                nx = self.x + dx[i] * self.speed
-                ny = self.y + dy[i] * self.speed
-                if self.check_collision(nx, ny, 30, 30, maze):
+            nx = self.x + dx[i] * self.speed
+            ny = self.y + dy[i] * self.speed
+            if self.check_collision(nx, ny, 30, 30, maze):
+                if i != forbidden:
                     ret[i] = self.heuristic((nx, ny), pacman.x, pacman.y)
 
-        min_idx = ret.index(min(ret))
+        min_h = min(ret)
+        if min_h == ret[3] and min_h != math.inf:
+            return 3
+        min_idx = ret.index(min_h)
         return min_idx
 
 
-    def move(self, maze, pacman):
-        min_idx = self.get_next_move(pacman, maze)
+    def move(self, maze, pacman, screen, game_over):
+        if abs(pacman.x - self.x) <= 15 and abs(pacman.y - self.y) <= 15:
+            game_over[0] = True
+        min_idx = self.get_next_move(pacman, maze, screen)
         new_dx = dx[min_idx] * self.speed
         new_dy = dy[min_idx] * self.speed
         self.x += new_dx
         self.y += new_dy
+        self.x %= 900
         self.last_move = min_idx
 
     def draw(self, screen):
         radius = 30 // 2
         pos = (self.x - radius , self.y - radius)
-        screen.blit(self.sprite[sprite_sheet[self.last_move]], pos)
+        image = pygame.transform.scale(self.sprite[sprite_sheet[self.last_move]], (40, 40))
+        screen.blit(image, pos)

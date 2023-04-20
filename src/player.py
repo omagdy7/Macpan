@@ -15,13 +15,14 @@ class Player():
 
     # checks if the current position of pacman is either a dot, big dot or free
     def is_valid(self,maze, x, y):
-        is_dot = maze.maze[y][x] == Map.D
-        is_big_dot = maze.maze[y][x] == Map.BD
-        is_free = maze.maze[y][x] == 0
-        if is_dot or is_big_dot:
-            maze.maze[y][x] = 0
-
-        return (is_dot or is_free or is_big_dot)
+        if x >= 0 and x < 30:
+            is_dot = maze.maze[y][x] == Map.D
+            is_big_dot = maze.maze[y][x] == Map.BD
+            is_free = maze.maze[y][x] == 0
+            if is_dot or is_big_dot:
+                maze.maze[y][x] = 0
+            return (is_dot or is_free or is_big_dot)
+        return True
 
 
     # checks collision with pacman and obstacles returns false if there is a collision and true otherwise
@@ -44,12 +45,12 @@ class Player():
     def draw(self, screen, counter):
         radius = 30 // 2
         pos = (self.x - radius , self.y - radius)
-        # pygame.draw.circle(screen, 'green', pos, radius)
+        image = pygame.transform.scale(self.sprite[counter // 5], (35, 35))
         if self.direction == DIRECTION.UP:
-            screen.blit(pygame.transform.rotate(self.sprite[counter // 5], 270), pos)
+            screen.blit(pygame.transform.rotate(image, 270), pos)
         elif self.direction == DIRECTION.DOWN:
-            screen.blit(pygame.transform.rotate(self.sprite[counter // 5], 90), pos)
+            screen.blit(pygame.transform.rotate(image, 90), pos)
         elif self.direction == DIRECTION.RIGHT:
-            screen.blit(pygame.transform.flip(self.sprite[counter // 5], True, False), pos)
+            screen.blit(pygame.transform.flip(image, True, False), pos)
         elif self.direction == DIRECTION.LEFT:
-            screen.blit(self.sprite[counter // 5], pos)
+            screen.blit(image, pos)

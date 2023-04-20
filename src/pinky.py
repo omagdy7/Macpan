@@ -1,6 +1,6 @@
+import pygame
 from typing_extensions import override
 from direction import DIRECTION
-from settings import settings
 import math
 from ghost import Ghost
 
@@ -36,7 +36,7 @@ class Pinky(Ghost):
                 return (pacman.x, pacman.y)
 
     @override
-    def get_next_move(self, target, maze):
+    def get_next_move(self, target, maze, screen):
         dx = [1, 0, -1, 0]
         dy = [0, 1, 0, -1]
 
@@ -54,6 +54,7 @@ class Pinky(Ghost):
             forbidden = 1
 
         new_target = self.get_four_tiles_ahead_of_pacman(target)
+        pygame.draw.circle(screen, self.color, (new_target[0], new_target[1]), 15)
         
         for i in range(len(dx)):
             if i != forbidden:
