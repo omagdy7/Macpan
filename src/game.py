@@ -167,4 +167,12 @@ class Game():
             pygame.display.flip()
 
         # Quit Pygame
-        pygame.quit()
+
+        #pygame.quit()
+        screen = pygame.display.set_mode((1280, 720))
+        pygame.mixer.music.stop()
+        siren_sound.stop()
+
+
+
+
