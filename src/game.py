@@ -24,13 +24,15 @@ class Game():
         screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
         # Sprite sheet for pacman
-        sprite_sheet = pygame.image.load( '../assets/pacman_left_sprite.png').convert_alpha()
+        sprite_sheet = pygame.image.load(
+            '../assets/pacman_left_sprite.png').convert_alpha()
 
         # Sprite sheets for the ghosts
-        blinky_sprite = pygame.image.load('../assets/blinky.png').convert_alpha()
-        pinky_sprite = pygame.image.load( '../assets/pinky.png').convert_alpha()
-        clyde_sprite = pygame.image.load( '../assets/clyde.png').convert_alpha()
-        inky_sprite = pygame.image.load( '../assets/inky.png').convert_alpha()
+        blinky_sprite = pygame.image.load(
+            '../assets/blinky.png').convert_alpha()
+        pinky_sprite = pygame.image.load('../assets/pinky.png').convert_alpha()
+        clyde_sprite = pygame.image.load('../assets/clyde.png').convert_alpha()
+        inky_sprite = pygame.image.load('../assets/inky.png').convert_alpha()
 
         # our beautiful maze
         maze = Map.Map()
@@ -41,7 +43,7 @@ class Game():
 
         # Initialize the player and the ghosts
         player = Player(sprite_sheet)
-        blinky = Blinky(blinky_sprite,75, 75)
+        blinky = Blinky(blinky_sprite, 75, 75)
         pinky = Pinky(pinky_sprite, 27 * 30, 30 * 30 + 15)
         inky = Inky(inky_sprite, 75, 30 * 30 + 15)
         clyde = Clyde(clyde_sprite, 27 * 30 + 15, 75)
@@ -62,7 +64,6 @@ class Game():
         pygame.mixer.music.play()
         siren_sound.play(-1)
         is_game_over = [False]
-
 
         # Main game loop
         while not is_game_over[0]:
@@ -124,7 +125,6 @@ class Game():
                 tx = player.speed
                 ty = 0
 
-
             # if tx and ty doesn't lead to colliding change the current dx and dy to them and other wise
             # let pacman move in his previous direction
             if player.check_collision(maze, tx, ty, TILE_WIDTH, TILE_HEIGHT):
@@ -145,12 +145,11 @@ class Game():
                 player.y += dy
                 player.x %= 900
 
-
             # Move ghosts
-            blinky.move(maze.maze, player, screen, is_game_over)
-            pinky.move(maze.maze, player, screen, is_game_over)
-            inky.move(maze.maze, player, screen, is_game_over)
-            clyde.move(maze.maze, player, screen, is_game_over)
+            blinky.move(maze.maze, player, screen, is_game_over, blinky)
+            pinky.move(maze.maze, player, screen, is_game_over, blinky)
+            # inky.move(maze.maze, player, screen, is_game_over, blinky)
+            clyde.move(maze.maze, player, screen, is_game_over, blinky)
 
             # Draw the map on each frame
             maze.draw_map(screen)
@@ -159,9 +158,8 @@ class Game():
             player.draw(screen, counter)
             blinky.draw(screen)
             pinky.draw(screen)
-            inky.draw(screen)
+            # inky.draw(screen)
             clyde.draw(screen)
-
 
             # Update the screen
             pygame.display.flip()
