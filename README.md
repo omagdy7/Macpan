@@ -26,8 +26,8 @@ python3 macpan.py
 - [X] Add the Algorithm for Pinky (Normal A* + 4 spaces ahead of pacman)
 - [X] Add the ghosts in the game
 - [X] Setup the sprite animation for the ghosts
+- [X] Add the Algorithm for Clyde (Same as Blinky excepts when he gets 8 tiles close to pacman he retreats, So he is basically useless)
 - [ ] Add the Algorithm for Inky (Ambush)
-- [ ] Add the Algorithm for Clyde (Same as Blinky excepts when he gets 8 tiles close to pacman he retreats, So he is basically useless)
 
 ## Optional
 
