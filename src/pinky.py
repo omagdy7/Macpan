@@ -43,7 +43,7 @@ class Pinky(Ghost):
         return (27 * 30 + 15, 30 * 30 + 15)
 
     @override
-    def get_next_move(self, target, maze, screen, blinky):
+    def get_next_move(self, pacman, maze, screen, blinky):
         default_tile = self.get_default_tile()
 
         dx = [1, 0, -1, 0]
@@ -64,16 +64,19 @@ class Pinky(Ghost):
 
         rand_pos = (0, 0)
 
-        new_target = self.get_four_tiles_ahead_of_pacman(target)
+        new_target = self.get_four_tiles_ahead_of_pacman(pacman)
         if settings.debug:
             pygame.draw.circle(screen, self.color,
                                (new_target[0], new_target[1]), 15)
             pygame.draw.circle(screen, self.color,
                                default_tile, 15)
 
-        if target.powerup:
+        if pacman.powerup:
             self.mode = MODE.FRIGHETENED
             rand_pos = random.randint(0, 900), random.randint(0, 990)
+
+        if pacman.powerup is False and self.mode == MODE.FRIGHETENED:
+            self.mode = MODE.CHASING
 
         for i in range(len(dx)):
             if i != forbidden:

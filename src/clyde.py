@@ -41,6 +41,9 @@ class Clyde(Ghost):
             self.mode = MODE.FRIGHETENED
             rand_pos = random.randint(0, 900), random.randint(0, 990)
 
+        if pacman.powerup is False and self.mode == MODE.FRIGHETENED:
+            self.mode = MODE.CHASING
+
         for i in range(len(dx)):
             nx = self.x + dx[i] * self.speed
             ny = self.y + dy[i] * self.speed

@@ -75,9 +75,10 @@ class Ghost():
 
         if pacman.powerup:
             self.mode = MODE.FRIGHETENED
-            pacman.sprite = get_sprites(pygame.image.load(
-                '../assets/blinky.png').convert_alpha())
             rand_pos = random.randint(0, 900), random.randint(0, 990)
+
+        if pacman.powerup is False and self.mode == MODE.FRIGHETENED:
+            self.mode = MODE.CHASING
 
         for i in range(len(dx)):
             nx = self.x + dx[i] * self.speed
@@ -119,6 +120,7 @@ class Ghost():
         self.last_move = min_idx
 
     def draw(self, screen, powerup, counter):
+        print(f"{self.color} -> mode: {self.mode}")
         radius = 30 // 2
         pos = (self.x - radius, self.y - radius)
         if powerup:

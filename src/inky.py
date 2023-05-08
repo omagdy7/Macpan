@@ -43,8 +43,8 @@ class Inky(Ghost):
         return (2 * 30 + 15, 30 * 30 + 15)
 
     def get_target(self, inter_tile, blinky):
-        target = (inter_tile[0] - (blinky.x - inter_tile[0]),
-                  inter_tile[1] - (blinky.y - inter_tile[1]))
+        target = (max(inter_tile[0] - (blinky.x - inter_tile[0]) % 900, 0),
+                  max(inter_tile[1] - (blinky.y - inter_tile[1]) % 990, 0))
         return target
 
     @override
@@ -76,7 +76,8 @@ class Inky(Ghost):
             self.mode = MODE.FRIGHETENED
             rand_pos = random.randint(0, 900), random.randint(0, 990)
 
-        #  y = mx + c
+        if pacman.powerup is False and self.mode == MODE.FRIGHETENED:
+            self.mode = MODE.CHASING
 
         if settings.debug:
             pygame.draw.line(screen, self.color, (target),
