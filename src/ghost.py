@@ -63,7 +63,7 @@ class Ghost():
 
         return True
 
-    def get_next_move(self, pacman, maze, screen, blinky):
+    def get_next_move(self, game_state, screen):
 
         default_tile = self.get_default_tile()
 
@@ -73,28 +73,29 @@ class Ghost():
 
         rand_pos = (0, 0)
 
-        if pacman.powerup:
+        if game_state.pacman.powerup:
             self.mode = MODE.FRIGHETENED
             rand_pos = random.randint(0, 900), random.randint(0, 990)
 
-        if pacman.powerup is False and self.mode == MODE.FRIGHETENED:
+        if game_state.pacman.powerup is False and self.mode == MODE.FRIGHETENED:
             self.mode = MODE.CHASING
 
         for i in range(len(dx)):
             nx = self.x + dx[i] * self.speed
             ny = self.y + dy[i] * self.speed
-            if self.check_collision(nx, ny, 30, 30, maze):
+            if self.check_collision(nx, ny, 30, 30, game_state.map.maze):
                 if i != forbidden:
                     if self.mode == MODE.SCATTERED:
                         ret[i] = self.heuristic(
                             (nx, ny), default_tile[0], default_tile[1])
                     elif self.mode == MODE.CHASING:
-                        ret[i] = self.heuristic((nx, ny), pacman.x, pacman.y)
+                        ret[i] = self.heuristic(
+                            (nx, ny), game_state.pacman.x, game_state.pacman.y)
                     elif self.mode == MODE.FRIGHETENED:
                         ret[i] = self.heuristic(
                             (nx, ny), rand_pos[0], rand_pos[1])
                     if settings.debug:
-                        pygame.draw.line(screen, self.color, (pacman.x, pacman.y),
+                        pygame.draw.line(screen, self.color, (game_state.pacman.x, game_state.pacman.y),
                                          (self.x, self.y), 1)
 
         min_h = min(ret)
@@ -108,10 +109,10 @@ class Ghost():
         min_idx = ret.index(min_h)
         return min_idx
 
-    def move(self, maze, pacman, screen, is_pacman_alive, blinky):
-        if abs(pacman.x - self.x) <= 15 and abs(pacman.y - self.y) <= 15:
-            is_pacman_alive[0] = False
-        min_idx = self.get_next_move(pacman, maze, screen, blinky)
+    def move(self, game_state, screen):
+        if abs(game_state.pacman.x - self.x) <= 15 and abs(game_state.pacman.y - self.y) <= 15:
+            game_state.is_pacman_alive = False
+        min_idx = self.get_next_move(game_state, screen)
         new_dx = dx[min_idx] * self.speed
         new_dy = dy[min_idx] * self.speed
         self.x += new_dx

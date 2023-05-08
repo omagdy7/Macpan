@@ -48,7 +48,7 @@ class Inky(Ghost):
         return target
 
     @override
-    def get_next_move(self, pacman, maze, screen, blinky):
+    def get_next_move(self, game_state, screen):
         default_tile = self.get_default_tile()
 
         dx = [1, 0, -1, 0]
@@ -67,16 +67,16 @@ class Inky(Ghost):
         if self.last_move == 3:
             forbidden = 1
 
-        inter_tile = self.get_intermediate_tile(pacman)
-        target = self.get_target(inter_tile, blinky)
+        inter_tile = self.get_intermediate_tile(game_state.pacman)
+        target = self.get_target(inter_tile, game_state.blinky)
 
         rand_pos = (0, 0)
 
-        if pacman.powerup:
+        if game_state.pacman.powerup:
             self.mode = MODE.FRIGHETENED
             rand_pos = random.randint(0, 900), random.randint(0, 990)
 
-        if pacman.powerup is False and self.mode == MODE.FRIGHETENED:
+        if game_state.pacman.powerup is False and self.mode == MODE.FRIGHETENED:
             self.mode = MODE.CHASING
 
         if settings.debug:
@@ -87,7 +87,7 @@ class Inky(Ghost):
             if i != forbidden:
                 nx = self.x + dx[i] * self.speed
                 ny = self.y + dy[i] * self.speed
-                if self.check_collision(nx, ny, 30, 30, maze):
+                if self.check_collision(nx, ny, 30, 30, game_state.map.maze):
                     if self.mode == MODE.SCATTERED:
                         ret[i] = self.heuristic(
                             (nx, ny), default_tile[0], default_tile[1])

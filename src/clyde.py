@@ -22,7 +22,7 @@ class Clyde(Ghost):
         return (27 * 30 + 15, 2 * 30 + 15)
 
     @override
-    def get_next_move(self, pacman, maze, screen, blinky):
+    def get_next_move(self, game_state, screen):
         default_tile = self.get_default_tile()
 
         dx = [1, 0, -1, 0]  # right, down, left, up
@@ -31,23 +31,24 @@ class Clyde(Ghost):
         inv_dir = [2, 3, 0, 1]
 
         ret = len(dx) * [math.inf]
-        bottom_left_corner = (2.5 * 30, (len(maze) - 1 - 1 - 0.5) * 30)
+        bottom_left_corner = (
+            2.5 * 30, (len(game_state.map.maze) - 1 - 1 - 0.5) * 30)
 
         forbidden = inv_dir[self.last_move]
 
         rand_pos = (0, 0)
 
-        if pacman.powerup:
+        if game_state.pacman.powerup:
             self.mode = MODE.FRIGHETENED
             rand_pos = random.randint(0, 900), random.randint(0, 990)
 
-        if pacman.powerup is False and self.mode == MODE.FRIGHETENED:
+        if game_state.pacman.powerup is False and self.mode == MODE.FRIGHETENED:
             self.mode = MODE.CHASING
 
         for i in range(len(dx)):
             nx = self.x + dx[i] * self.speed
             ny = self.y + dy[i] * self.speed
-            if self.check_collision(nx, ny, 30, 30, maze):
+            if self.check_collision(nx, ny, 30, 30, game_state.map.maze):
                 if i != forbidden:
                     if self.mode == MODE.SCATTERED:
                         ret[i] = self.heuristic(
@@ -56,7 +57,7 @@ class Clyde(Ghost):
                         ret[i] = self.heuristic(
                             (nx, ny), rand_pos[0], rand_pos[1])
                     elif self.mode == MODE.CHASING:
-                        if self.is_eight_tiles_away(pacman):
+                        if self.is_eight_tiles_away(game_state.pacman):
                             ret[i] = self.heuristic(
                                 (nx, ny), bottom_left_corner[0], bottom_left_corner[1])
                             if settings.debug:
@@ -64,9 +65,9 @@ class Clyde(Ghost):
                                                  (self.x, self.y), 1)
                         else:
                             ret[i] = self.heuristic(
-                                (nx, ny), pacman.x, pacman.y)
+                                (nx, ny), game_state.pacman.x, game_state.pacman.y)
                             if settings.debug:
-                                pygame.draw.line(screen, self.color, (pacman.x, pacman.y),
+                                pygame.draw.line(screen, self.color, (game_state.pacman.x, game_state.pacman.y),
                                                  (self.x, self.y), 1)
 
         min_h = min(ret)
