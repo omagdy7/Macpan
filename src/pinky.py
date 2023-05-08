@@ -1,6 +1,7 @@
 import pygame
 from typing_extensions import override
 from direction import DIRECTION
+from mode import MODE
 from settings import settings
 import math
 from ghost import Ghost
@@ -37,7 +38,13 @@ class Pinky(Ghost):
                 return (pacman.x, pacman.y)
 
     @override
+    def get_default_tile(self):
+        return (27 * 30 + 15, 30 * 30 + 15)
+
+    @override
     def get_next_move(self, target, maze, screen, blinky):
+        default_tile = self.get_default_tile()
+
         dx = [1, 0, -1, 0]
         dy = [0, 1, 0, -1]
 
@@ -58,17 +65,31 @@ class Pinky(Ghost):
         if settings.debug:
             pygame.draw.circle(screen, self.color,
                                (new_target[0], new_target[1]), 15)
+            pygame.draw.circle(screen, self.color,
+                               default_tile, 15)
 
         for i in range(len(dx)):
             if i != forbidden:
                 nx = self.x + dx[i] * self.speed
                 ny = self.y + dy[i] * self.speed
                 if self.check_collision(nx, ny, 30, 30, maze):
-                    ret[i] = self.heuristic(
-                        (nx, ny), new_target[0], new_target[1])
+                    if self.mode == MODE.SCATTERED:
+                        ret[i] = self.heuristic(
+                            (nx, ny), default_tile[0], default_tile[1])
+                    else:
+                        ret[i] = self.heuristic(
+                            (nx, ny), new_target[0], new_target[1])
                     if settings.debug:
                         pygame.draw.line(screen, self.color, (new_target),
                                          (self.x, self.y), 1)
 
-        min_idx = ret.index(min(ret))
+        min_h = min(ret)
+
+        # Favour going up when there is a conflict
+        if min_h == ret[3] and min_h != math.inf:
+            return 3
+        # Favour going down than sideways when there is a conflict
+        if min_h == ret[1] and min_h != math.inf:
+            return 1
+        min_idx = ret.index(min_h)
         return min_idx

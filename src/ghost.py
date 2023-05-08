@@ -2,6 +2,7 @@ import pygame
 import math
 from util import get_sprites
 from settings import settings
+from mode import MODE
 import map as Map
 
 dx = [1, 0, -1, 0]  # right, down, left, up
@@ -19,6 +20,7 @@ class Ghost():
         self.color = color
         self.last_move = 3  # this represents the direction based on the dx, dy arrays
         self.speed = 3
+        self.mode = MODE.SCATTERED
 
     def in_bounds(self, pos):
         (x, y) = pos
@@ -37,7 +39,12 @@ class Ghost():
             return (is_dot or is_free or is_big_dot)
         return True
 
-    # checks collision with pacman and obstacles returns false if there is a collision and true otherwise
+    def get_default_tile(self):
+        return (75, 75)
+
+    # checks collision with pacman and obstacles returns false if there is
+    # a collision and true otherwise
+
     def check_collision(self, nx, ny, gx, gy, maze):
         direct_x = [1, 0, -1, 0, 1, 1, -1, -1]
         direct_y = [0, 1, 0, -1, -1, 1, -1, 1]
@@ -54,6 +61,8 @@ class Ghost():
 
     def get_next_move(self, pacman, maze, screen, blinky):
 
+        default_tile = self.get_default_tile()
+
         ret = len(dx) * [math.inf]
 
         forbidden = inv_dir[self.last_move]
@@ -63,7 +72,11 @@ class Ghost():
             ny = self.y + dy[i] * self.speed
             if self.check_collision(nx, ny, 30, 30, maze):
                 if i != forbidden:
-                    ret[i] = self.heuristic((nx, ny), pacman.x, pacman.y)
+                    if self.mode == MODE.SCATTERED:
+                        ret[i] = self.heuristic(
+                            (nx, ny), default_tile[0], default_tile[1])
+                    else:
+                        ret[i] = self.heuristic((nx, ny), pacman.x, pacman.y)
                     if settings.debug:
                         pygame.draw.line(screen, self.color, (pacman.x, pacman.y),
                                          (self.x, self.y), 1)
@@ -73,6 +86,9 @@ class Ghost():
         # Favour going up when there is a conflict
         if min_h == ret[3] and min_h != math.inf:
             return 3
+        # Favour going down than sideways when there is a conflict
+        if min_h == ret[1] and min_h != math.inf:
+            return 1
         min_idx = ret.index(min_h)
         return min_idx
 

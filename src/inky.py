@@ -1,6 +1,7 @@
 import math
 from typing_extensions import override
 from direction import DIRECTION
+from mode import MODE
 from settings import settings
 import pygame
 from ghost import Ghost
@@ -36,6 +37,10 @@ class Inky(Ghost):
             else:
                 return (pacman.x, pacman.y)
 
+    @override
+    def get_default_tile(self):
+        return (2 * 30 + 15, 30 * 30 + 15)
+
     def get_target(self, inter_tile, blinky):
         target = (inter_tile[0] - (blinky.x - inter_tile[0]),
                   inter_tile[1] - (blinky.y - inter_tile[1]))
@@ -43,6 +48,8 @@ class Inky(Ghost):
 
     @override
     def get_next_move(self, target, maze, screen, blinky):
+        default_tile = self.get_default_tile()
+
         dx = [1, 0, -1, 0]
         dy = [0, 1, 0, -1]
 
@@ -73,8 +80,20 @@ class Inky(Ghost):
                 nx = self.x + dx[i] * self.speed
                 ny = self.y + dy[i] * self.speed
                 if self.check_collision(nx, ny, 30, 30, maze):
-                    ret[i] = self.heuristic(
-                        (nx, ny), target[0], target[1])
+                    if self.mode == MODE.SCATTERED:
+                        ret[i] = self.heuristic(
+                            (nx, ny), default_tile[0], default_tile[1])
+                    else:
+                        ret[i] = self.heuristic(
+                            (nx, ny), target[0], target[1])
 
-        min_idx = ret.index(min(ret))
+        min_h = min(ret)
+
+        # Favour going up when there is a conflict
+        if min_h == ret[3] and min_h != math.inf:
+            return 3
+        # Favour going down than sideways when there is a conflict
+        if min_h == ret[1] and min_h != math.inf:
+            return 1
+        min_idx = ret.index(min_h)
         return min_idx

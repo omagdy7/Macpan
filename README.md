@@ -31,12 +31,12 @@ python3 macpan.py
 
 ## Optional
 
+- [X] Add scattered mode for the ghosts
 - [ ] Add powerups
+- [ ] Add firghtening mode for the ghosts
 - [ ] Setup a menu for the game
 - [ ] Setup a simple score system
 - [ ] Setup a proper sfx/audio for the game
-- [ ] Add firghtening mode for the ghosts
-- [ ] Add scattered mode for the ghosts
 
 ## EXTRA BONUS
 

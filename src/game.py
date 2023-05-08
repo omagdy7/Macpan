@@ -1,6 +1,7 @@
 from blinky import Blinky
 from clyde import Clyde
 from direction import DIRECTION
+from mode import MODE
 from inky import Inky
 from pinky import Pinky
 from player import Player
@@ -34,6 +35,10 @@ class Game():
         clyde_sprite = pygame.image.load('../assets/clyde.png').convert_alpha()
         inky_sprite = pygame.image.load('../assets/inky.png').convert_alpha()
 
+        # Set the timer to trigger after 10,000 milliseconds (10 seconds)
+        timer_event = pygame.USEREVENT + 1
+        pygame.time.set_timer(timer_event, 1000 * 10, 1)
+
         # our beautiful maze
         maze = Map.Map()
 
@@ -43,10 +48,14 @@ class Game():
 
         # Initialize the player and the ghosts
         player = Player(sprite_sheet)
-        blinky = Blinky(blinky_sprite, 75, 75)
-        pinky = Pinky(pinky_sprite, 27 * 30, 30 * 30 + 15)
-        inky = Inky(inky_sprite, 75, 30 * 30 + 15)
-        clyde = Clyde(clyde_sprite, 27 * 30 + 15, 75)
+        blinky = Blinky(blinky_sprite, 12 * TILE_WIDTH +
+                        15, 12 * TILE_HEIGHT + 15)
+        pinky = Pinky(pinky_sprite, 11 * TILE_WIDTH +
+                      15, 12 * TILE_HEIGHT + 15)
+        inky = Inky(inky_sprite, 13 * TILE_WIDTH +
+                    15, 12 * TILE_HEIGHT + 15)
+        clyde = Clyde(clyde_sprite, 14 * TILE_WIDTH +
+                      15, 12 * TILE_HEIGHT + 15)
 
         # Set the pacman velocity
         dx = 0
@@ -105,6 +114,13 @@ class Game():
                         player.direction = DIRECTION.RIGHT
                         tx = player.speed
                         ty = 0  # Necssarry to move only horizontal or vertical
+                    # Check for the timer event
+                if event.type == timer_event:
+                    print("Finished")
+                    pinky.mode = MODE.CHASING
+                    inky.mode = MODE.CHASING
+                    blinky.mode = MODE.CHASING
+                    clyde.mode = MODE.CHASING
 
             keys = pygame.key.get_pressed()
 
@@ -126,7 +142,8 @@ class Game():
                 tx = player.speed
                 ty = 0
 
-            # if tx and ty doesn't lead to colliding change the current dx and dy to them and other wise
+            # if tx and ty doesn't lead to colliding change the current
+            # dx and dy to them and other wise
             # let pacman move in his previous direction
             if player.check_collision(maze, tx, ty, TILE_WIDTH, TILE_HEIGHT):
                 dx = tx
