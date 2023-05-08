@@ -26,7 +26,9 @@ class GameState():
         self.clyde = Clyde(sprites[4], 14 * TILE_WIDTH +
                            15, 12 * TILE_HEIGHT + 15)
         self.map = Map.Map()
+        self.food = 0
         self.game_over = False
+        self.score = 0
         self.is_pacman_alive = True
 
     def reset(self, sprites):
@@ -40,7 +42,9 @@ class GameState():
         self.clyde = Clyde(sprites[4], 14 * TILE_WIDTH +
                            15, 12 * TILE_HEIGHT + 15)
         self.map = Map.Map()
+        self.food = 0
         self.game_over = False
         self.is_pacman_alive = True
+        self.score = 0
         timer_event = pygame.USEREVENT + 1
         pygame.time.set_timer(timer_event, 1000 * 10, 1)

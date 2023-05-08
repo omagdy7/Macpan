@@ -43,6 +43,10 @@ class Pinky(Ghost):
         return (27 * 30 + 15, 30 * 30 + 15)
 
     @override
+    def get_intial_tile(self):
+        return (11 * 30 + 15, 12 * 30 + 15)
+
+    @override
     def get_next_move(self, game_state, screen):
         default_tile = self.get_default_tile()
 
@@ -65,11 +69,6 @@ class Pinky(Ghost):
         rand_pos = (0, 0)
 
         new_target = self.get_four_tiles_ahead_of_pacman(game_state.pacman)
-        if settings.debug:
-            pygame.draw.circle(screen, self.color,
-                               (new_target[0], new_target[1]), 15)
-            pygame.draw.circle(screen, self.color,
-                               default_tile, 15)
 
         if game_state.pacman.powerup:
             self.mode = MODE.FRIGHETENED

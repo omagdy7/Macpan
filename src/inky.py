@@ -40,7 +40,11 @@ class Inky(Ghost):
 
     @override
     def get_default_tile(self):
-        return (2 * 30 + 15, 30 * 30 + 15)
+        return (27 * 30 + 15, 2 * 30 + 15)
+
+    @override
+    def get_intial_tile(self):
+        return (13 * 30 + 15, 12 * 30 + 15)
 
     def get_target(self, inter_tile, blinky):
         target = (max(inter_tile[0] - (blinky.x - inter_tile[0]) % 900, 0),

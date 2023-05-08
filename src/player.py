@@ -17,22 +17,26 @@ class Player():
         self.timer = None
 
     # checks if the current position of pacman is either a dot, big dot or free
-    def is_valid(self, maze, x, y):
+    def is_valid(self, game_state, x, y):
         if x >= 0 and x < 30:
-            is_dot = maze.maze[y][x] == Map.D
-            is_big_dot = maze.maze[y][x] == Map.BD
-            is_free = maze.maze[y][x] == 0
+            is_dot = game_state.map.maze[y][x] == Map.D
+            is_big_dot = game_state.map.maze[y][x] == Map.BD
+            is_free = game_state.map.maze[y][x] == 0
             if is_dot or is_big_dot:
-                maze.maze[y][x] = 0
+                game_state.map.maze[y][x] = 0
+                game_state.food += 1
+            if is_dot:
+                game_state.score += 10
             if is_big_dot:
                 self.powerup = True
                 self.timer = Timer(5 * 1000)
+                game_state.score += 50
             return (is_dot or is_free or is_big_dot)
         return True
 
     # checks collision with pacman and obstacles returns false
     # if there is a collision and true otherwise
-    def check_collision(self, maze, dx, dy, tile_width, tile_height):
+    def check_collision(self, game_state, dx, dy, tile_width, tile_height):
         direct_x = [1, 0, -1, 0, 1, 1, -1, -1]
         direct_y = [0, 1, 0, -1, -1, 1, -1, 1]
 
@@ -43,7 +47,7 @@ class Player():
             ny = (self.y + ddy) + direct_y[i] * 14
             x = nx // tile_width
             y = ny // tile_height
-            if not self.is_valid(maze, x, y):
+            if not self.is_valid(game_state, x, y):
                 return False
 
         return True

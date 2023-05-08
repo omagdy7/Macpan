@@ -1,4 +1,5 @@
 import pygame
+import time
 import random
 import math
 from util import get_sprites
@@ -34,7 +35,6 @@ class Ghost():
         return abs(next_pos[0] - tx) + abs(next_pos[1] - ty)
 
     # checks if the current position of pacman is either a dot, big dot or free
-
     def is_valid(self, maze, x, y):
         if x >= 0 and x < 30:  # Necessary to make portals work
             is_dot = maze[y][x] == Map.D
@@ -45,6 +45,9 @@ class Ghost():
 
     def get_default_tile(self):
         return (75, 75)
+
+    def get_intial_tile(self):
+        return (12 * 30 + 15, 12 * 30 + 15)
 
     # checks collision with pacman and obstacles returns false if there is
     # a collision and true otherwise
@@ -62,6 +65,17 @@ class Ghost():
                 return False
 
         return True
+
+    def check_pacman_collision(self, game_state):
+        if game_state.pacman.powerup and abs(game_state.pacman.x - self.x) <= 30 and abs(game_state.pacman.y - self.y) <= 30:
+            initial_position = self.get_intial_tile()
+            time.sleep(1)
+            game_state.score += 200
+            self.x = initial_position[0]
+            self.y = initial_position[1]
+        elif not game_state.pacman.powerup and abs(game_state.pacman.x - self.x) <= 30 and abs(game_state.pacman.y - self.y) <= 30:
+            if abs(game_state.pacman.x - self.x) <= 30 and abs(game_state.pacman.y - self.y) <= 30:
+                game_state.is_pacman_alive = False
 
     def get_next_move(self, game_state, screen):
 
@@ -110,8 +124,7 @@ class Ghost():
         return min_idx
 
     def move(self, game_state, screen):
-        if abs(game_state.pacman.x - self.x) <= 15 and abs(game_state.pacman.y - self.y) <= 15:
-            game_state.is_pacman_alive = False
+        self.check_pacman_collision(game_state)
         min_idx = self.get_next_move(game_state, screen)
         new_dx = dx[min_idx] * self.speed
         new_dy = dy[min_idx] * self.speed

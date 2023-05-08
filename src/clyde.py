@@ -19,7 +19,11 @@ class Clyde(Ghost):
 
     @override
     def get_default_tile(self):
-        return (27 * 30 + 15, 2 * 30 + 15)
+        return (2 * 30 + 15, 30 * 30 + 15)
+
+    @override
+    def get_intial_tile(self):
+        return (14 * 30 + 15, 12 * 30 + 15)
 
     @override
     def get_next_move(self, game_state, screen):
@@ -44,6 +48,10 @@ class Clyde(Ghost):
 
         if game_state.pacman.powerup is False and self.mode == MODE.FRIGHETENED:
             self.mode = MODE.CHASING
+
+        if settings.debug:
+            pygame.draw.line(screen, self.color, (game_state.pacman.x, game_state.pacman.y),
+                             (self.x, self.y), 1)
 
         for i in range(len(dx)):
             nx = self.x + dx[i] * self.speed
