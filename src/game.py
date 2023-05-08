@@ -116,7 +116,6 @@ class Game():
                         ty = 0  # Necssarry to move only horizontal or vertical
                     # Check for the timer event
                 if event.type == timer_event:
-                    print("Finished")
                     pinky.mode = MODE.CHASING
                     inky.mode = MODE.CHASING
                     blinky.mode = MODE.CHASING
@@ -174,10 +173,10 @@ class Game():
 
             # Draw the player and the ghosts
             player.draw(screen, counter)
-            blinky.draw(screen)
-            pinky.draw(screen)
-            inky.draw(screen)
-            clyde.draw(screen)
+            blinky.draw(screen, player.powerup, counter)
+            pinky.draw(screen, player.powerup, counter)
+            inky.draw(screen, player.powerup, counter)
+            clyde.draw(screen, player.powerup, counter)
 
             # Update the screen
             pygame.display.flip()

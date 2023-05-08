@@ -1,4 +1,5 @@
 from ghost import Ghost
+import random
 import pygame
 from settings import settings
 from mode import MODE
@@ -34,6 +35,12 @@ class Clyde(Ghost):
 
         forbidden = inv_dir[self.last_move]
 
+        rand_pos = (0, 0)
+
+        if pacman.powerup:
+            self.mode = MODE.FRIGHETENED
+            rand_pos = random.randint(0, 900), random.randint(0, 990)
+
         for i in range(len(dx)):
             nx = self.x + dx[i] * self.speed
             ny = self.y + dy[i] * self.speed
@@ -42,7 +49,10 @@ class Clyde(Ghost):
                     if self.mode == MODE.SCATTERED:
                         ret[i] = self.heuristic(
                             (nx, ny), default_tile[0], default_tile[1])
-                    else:
+                    elif self.mode == MODE.FRIGHETENED:
+                        ret[i] = self.heuristic(
+                            (nx, ny), rand_pos[0], rand_pos[1])
+                    elif self.mode == MODE.CHASING:
                         if self.is_eight_tiles_away(pacman):
                             ret[i] = self.heuristic(
                                 (nx, ny), bottom_left_corner[0], bottom_left_corner[1])

@@ -1,8 +1,10 @@
 import pygame
+import random
 import math
 from util import get_sprites
 from settings import settings
 from mode import MODE
+from direction import DIRECTION
 import map as Map
 
 dx = [1, 0, -1, 0]  # right, down, left, up
@@ -16,6 +18,8 @@ class Ghost():
     def __init__(self, sprite_sheet, color, x, y):
         self.x = x
         self.y = y
+        self.sprite_sheet = sprite_sheet
+        self.name = "blinky"
         self.sprite = get_sprites(sprite_sheet)
         self.color = color
         self.last_move = 3  # this represents the direction based on the dx, dy arrays
@@ -67,6 +71,14 @@ class Ghost():
 
         forbidden = inv_dir[self.last_move]
 
+        rand_pos = (0, 0)
+
+        if pacman.powerup:
+            self.mode = MODE.FRIGHETENED
+            pacman.sprite = get_sprites(pygame.image.load(
+                '../assets/blinky.png').convert_alpha())
+            rand_pos = random.randint(0, 900), random.randint(0, 990)
+
         for i in range(len(dx)):
             nx = self.x + dx[i] * self.speed
             ny = self.y + dy[i] * self.speed
@@ -75,8 +87,11 @@ class Ghost():
                     if self.mode == MODE.SCATTERED:
                         ret[i] = self.heuristic(
                             (nx, ny), default_tile[0], default_tile[1])
-                    else:
+                    elif self.mode == MODE.CHASING:
                         ret[i] = self.heuristic((nx, ny), pacman.x, pacman.y)
+                    elif self.mode == MODE.FRIGHETENED:
+                        ret[i] = self.heuristic(
+                            (nx, ny), rand_pos[0], rand_pos[1])
                     if settings.debug:
                         pygame.draw.line(screen, self.color, (pacman.x, pacman.y),
                                          (self.x, self.y), 1)
@@ -103,9 +118,23 @@ class Ghost():
         self.x %= 900  # The logic of the portal
         self.last_move = min_idx
 
-    def draw(self, screen):
+    def draw(self, screen, powerup, counter):
         radius = 30 // 2
         pos = (self.x - radius, self.y - radius)
-        image = pygame.transform.scale(
-            self.sprite[sprite_sheet[self.last_move]], (40, 40))
-        screen.blit(image, pos)
+        if powerup:
+            self.sprite = get_sprites(pygame.image.load(
+                f'../assets/pacman_{self.color}.png').convert_alpha())
+            image = pygame.transform.scale(self.sprite[counter // 5], (35, 35))
+            if self.last_move == DIRECTION.UP.value:
+                screen.blit(pygame.transform.rotate(image, 270), pos)
+            elif self.last_move == DIRECTION.DOWN.value:
+                screen.blit(pygame.transform.rotate(image, 90), pos)
+            elif self.last_move == DIRECTION.RIGHT.value:
+                screen.blit(pygame.transform.flip(image, True, False), pos)
+            elif self.last_move == DIRECTION.LEFT.value:
+                screen.blit(image, pos)
+        else:
+            self.sprite = get_sprites(self.sprite_sheet)
+            image = pygame.transform.scale(
+                self.sprite[sprite_sheet[self.last_move]], (40, 40))
+            screen.blit(image, pos)

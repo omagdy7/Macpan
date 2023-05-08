@@ -1,4 +1,5 @@
 import pygame
+import random
 from typing_extensions import override
 from direction import DIRECTION
 from mode import MODE
@@ -61,12 +62,18 @@ class Pinky(Ghost):
         if self.last_move == 3:
             forbidden = 1
 
+        rand_pos = (0, 0)
+
         new_target = self.get_four_tiles_ahead_of_pacman(target)
         if settings.debug:
             pygame.draw.circle(screen, self.color,
                                (new_target[0], new_target[1]), 15)
             pygame.draw.circle(screen, self.color,
                                default_tile, 15)
+
+        if target.powerup:
+            self.mode = MODE.FRIGHETENED
+            rand_pos = random.randint(0, 900), random.randint(0, 990)
 
         for i in range(len(dx)):
             if i != forbidden:
@@ -76,7 +83,10 @@ class Pinky(Ghost):
                     if self.mode == MODE.SCATTERED:
                         ret[i] = self.heuristic(
                             (nx, ny), default_tile[0], default_tile[1])
-                    else:
+                    elif self.mode == MODE.FRIGHETENED:
+                        ret[i] = self.heuristic(
+                            (nx, ny), rand_pos[0], rand_pos[1])
+                    elif self.mode == MODE.CHASING:
                         ret[i] = self.heuristic(
                             (nx, ny), new_target[0], new_target[1])
                     if settings.debug:

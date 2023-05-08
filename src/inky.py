@@ -1,4 +1,5 @@
 import math
+import random
 from typing_extensions import override
 from direction import DIRECTION
 from mode import MODE
@@ -47,7 +48,7 @@ class Inky(Ghost):
         return target
 
     @override
-    def get_next_move(self, target, maze, screen, blinky):
+    def get_next_move(self, pacman, maze, screen, blinky):
         default_tile = self.get_default_tile()
 
         dx = [1, 0, -1, 0]
@@ -66,8 +67,14 @@ class Inky(Ghost):
         if self.last_move == 3:
             forbidden = 1
 
-        inter_tile = self.get_intermediate_tile(target)
+        inter_tile = self.get_intermediate_tile(pacman)
         target = self.get_target(inter_tile, blinky)
+
+        rand_pos = (0, 0)
+
+        if pacman.powerup:
+            self.mode = MODE.FRIGHETENED
+            rand_pos = random.randint(0, 900), random.randint(0, 990)
 
         #  y = mx + c
 
@@ -83,7 +90,10 @@ class Inky(Ghost):
                     if self.mode == MODE.SCATTERED:
                         ret[i] = self.heuristic(
                             (nx, ny), default_tile[0], default_tile[1])
-                    else:
+                    elif self.mode == MODE.FRIGHETENED:
+                        ret[i] = self.heuristic(
+                            (nx, ny), rand_pos[0], rand_pos[1])
+                    elif self.mode == MODE.CHASING:
                         ret[i] = self.heuristic(
                             (nx, ny), target[0], target[1])
 
