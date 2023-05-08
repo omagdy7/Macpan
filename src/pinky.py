@@ -70,7 +70,7 @@ class Pinky(Ghost):
 
         new_target = self.get_four_tiles_ahead_of_pacman(game_state.pacman)
 
-        if game_state.pacman.powerup:
+        if game_state.pacman.powerup and self.mode != MODE.EATEN:
             self.mode = MODE.FRIGHETENED
             rand_pos = random.randint(0, 900), random.randint(0, 990)
 
@@ -91,6 +91,10 @@ class Pinky(Ghost):
                     elif self.mode == MODE.CHASING:
                         ret[i] = self.heuristic(
                             (nx, ny), new_target[0], new_target[1])
+                    elif self.mode == MODE.EATEN:
+                        pos = self.get_intial_tile()
+                        self.x = pos[0]
+                        self.y = pos[1]
                     if settings.debug:
                         pygame.draw.line(screen, self.color, (new_target),
                                          (self.x, self.y), 1)

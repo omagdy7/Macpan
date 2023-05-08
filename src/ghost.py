@@ -3,6 +3,7 @@ import time
 import random
 import math
 from util import get_sprites
+from timer import Timer
 from settings import settings
 from mode import MODE
 from direction import DIRECTION
@@ -25,6 +26,7 @@ class Ghost():
         self.color = color
         self.last_move = 3  # this represents the direction based on the dx, dy arrays
         self.speed = 3
+        self.timer = None
         self.mode = MODE.SCATTERED
 
     def in_bounds(self, pos):
@@ -69,6 +71,8 @@ class Ghost():
     def check_pacman_collision(self, game_state):
         if game_state.pacman.powerup and abs(game_state.pacman.x - self.x) <= 30 and abs(game_state.pacman.y - self.y) <= 30:
             initial_position = self.get_intial_tile()
+            self.mode = MODE.EATEN
+            self.timer = Timer(2 * 1000)
             time.sleep(1)
             game_state.score += 200
             self.x = initial_position[0]
@@ -87,7 +91,7 @@ class Ghost():
 
         rand_pos = (0, 0)
 
-        if game_state.pacman.powerup:
+        if game_state.pacman.powerup and self.mode != MODE.EATEN:
             self.mode = MODE.FRIGHETENED
             rand_pos = random.randint(0, 900), random.randint(0, 990)
 
@@ -108,6 +112,10 @@ class Ghost():
                     elif self.mode == MODE.FRIGHETENED:
                         ret[i] = self.heuristic(
                             (nx, ny), rand_pos[0], rand_pos[1])
+                    elif self.mode == MODE.EATEN:
+                        pos = self.get_intial_tile()
+                        self.x = pos[0]
+                        self.y = pos[1]
                     if settings.debug:
                         pygame.draw.line(screen, self.color, (game_state.pacman.x, game_state.pacman.y),
                                          (self.x, self.y), 1)
@@ -134,6 +142,11 @@ class Ghost():
         self.last_move = min_idx
 
     def draw(self, screen, powerup, counter):
+        if self.timer is not None:
+            elapsed_time = pygame.time.get_ticks() - self.timer.start
+            if elapsed_time > self.timer.duration:
+                self.mode = MODE.CHASING
+
         radius = 30 // 2
         pos = (self.x - radius, self.y - radius)
         if powerup:

@@ -42,7 +42,7 @@ class Clyde(Ghost):
 
         rand_pos = (0, 0)
 
-        if game_state.pacman.powerup:
+        if game_state.pacman.powerup and self.mode != MODE.EATEN:
             self.mode = MODE.FRIGHETENED
             rand_pos = random.randint(0, 900), random.randint(0, 990)
 
@@ -77,7 +77,10 @@ class Clyde(Ghost):
                             if settings.debug:
                                 pygame.draw.line(screen, self.color, (game_state.pacman.x, game_state.pacman.y),
                                                  (self.x, self.y), 1)
-
+                    elif self.mode == MODE.EATEN:
+                        pos = self.get_intial_tile()
+                        self.x = pos[0]
+                        self.y = pos[1]
         min_h = min(ret)
 
         # Favour going up when there is a conflict
