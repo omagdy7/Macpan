@@ -108,9 +108,9 @@ class Ghost():
         min_idx = ret.index(min_h)
         return min_idx
 
-    def move(self, maze, pacman, screen, game_over, blinky):
+    def move(self, maze, pacman, screen, is_pacman_alive, blinky):
         if abs(pacman.x - self.x) <= 15 and abs(pacman.y - self.y) <= 15:
-            game_over[0] = True
+            is_pacman_alive[0] = False
         min_idx = self.get_next_move(pacman, maze, screen, blinky)
         new_dx = dx[min_idx] * self.speed
         new_dy = dy[min_idx] * self.speed
@@ -120,7 +120,6 @@ class Ghost():
         self.last_move = min_idx
 
     def draw(self, screen, powerup, counter):
-        print(f"{self.color} -> mode: {self.mode}")
         radius = 30 // 2
         pos = (self.x - radius, self.y - radius)
         if powerup:

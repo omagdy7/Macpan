@@ -17,6 +17,35 @@ class Game():
     def __init__(self):
         self.settings = settings
 
+    def show_gameover_screen(self, screen, game_over):
+        font = pygame.font.SysFont(None, 48)
+
+        # Render the "Game Over" text to a surface
+        game_over_text = font.render(
+            "Game Over. Press R to try again.", True, (255, 255, 255))
+
+        # Blit the "Game Over" text onto the screen
+        text_rect = game_over_text.get_rect(
+            center=(WIDTH/2, HEIGHT/2))
+        screen.blit(game_over_text, text_rect)
+
+        # Update the display
+        pygame.display.flip()
+
+        quit_game = False  # Initialize the flag variable
+        while not quit_game:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
+                    # Reset the game and start again
+                    # Add your own code here to reset the game state
+                    game_over[0] = False
+                    quit_game = True  # Set the flag to True to break out of both loops
+                    break
+                elif event.type == pygame.QUIT:
+                    game_over[0] = True
+                    quit_game = True  # Set the flag to True to break out of both loops
+                    break
+
     def run(self):
         # Initialize Pygame
         pygame.init()
@@ -68,7 +97,6 @@ class Game():
 
         pygame.mixer.music.load('../assets/sfx/game_start.wav')
         siren_sound = pygame.mixer.Sound('../assets/sfx/siren_1.wav')
-        munch_sound = pygame.mixer.Sound('../assets/sfx/munch_1.wav')
 
         if settings.sound:
             pygame.mixer.music.play()
@@ -92,10 +120,12 @@ class Game():
             tx = dx
             ty = dy
 
+            is_pacman_alive = [True]
+
             # Handling events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    is_game_over = False
+                    is_game_over[0] = True
                 elif event.type == pygame.KEYDOWN:
                     # Move the circle based on the pressed key
                     if event.key == pygame.K_w:
@@ -163,10 +193,10 @@ class Game():
                 player.x %= 900
 
             # Move ghosts
-            blinky.move(maze.maze, player, screen, is_game_over, blinky)
-            pinky.move(maze.maze, player, screen, is_game_over, blinky)
-            inky.move(maze.maze, player, screen, is_game_over, blinky)
-            clyde.move(maze.maze, player, screen, is_game_over, blinky)
+            blinky.move(maze.maze, player, screen, is_pacman_alive, blinky)
+            pinky.move(maze.maze, player, screen, is_pacman_alive, blinky)
+            inky.move(maze.maze, player, screen, is_pacman_alive, blinky)
+            clyde.move(maze.maze, player, screen, is_pacman_alive, blinky)
 
             # Draw the map on each frame
             maze.draw_map(screen)
@@ -178,8 +208,13 @@ class Game():
             inky.draw(screen, player.powerup, counter)
             clyde.draw(screen, player.powerup, counter)
 
-            # Update the screen
-            pygame.display.flip()
+            if not is_pacman_alive[0]:
+                self.show_gameover_screen(
+                    screen, is_game_over)
+                is_pacman_alive[0] = True
+            else:
+                # Update the screen
+                pygame.display.flip()
 
         # Quit Pygame
         pygame.quit()
