@@ -61,8 +61,9 @@ class Game():
         siren_sound = pygame.mixer.Sound('../assets/sfx/siren_1.wav')
         munch_sound = pygame.mixer.Sound('../assets/sfx/munch_1.wav')
 
-        pygame.mixer.music.play()
-        siren_sound.play(-1)
+        if settings.sound:
+            pygame.mixer.music.play()
+            siren_sound.play(-1)
         is_game_over = [False]
 
         # Main game loop
@@ -148,7 +149,7 @@ class Game():
             # Move ghosts
             blinky.move(maze.maze, player, screen, is_game_over, blinky)
             pinky.move(maze.maze, player, screen, is_game_over, blinky)
-            # inky.move(maze.maze, player, screen, is_game_over, blinky)
+            inky.move(maze.maze, player, screen, is_game_over, blinky)
             clyde.move(maze.maze, player, screen, is_game_over, blinky)
 
             # Draw the map on each frame
@@ -158,7 +159,7 @@ class Game():
             player.draw(screen, counter)
             blinky.draw(screen)
             pinky.draw(screen)
-            # inky.draw(screen)
+            inky.draw(screen)
             clyde.draw(screen)
 
             # Update the screen

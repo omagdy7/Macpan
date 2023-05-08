@@ -1,4 +1,3 @@
-from typing import List
 from direction import DIRECTION
 import map as Map
 from util import get_sprites
@@ -14,7 +13,7 @@ class Player():
         self.direction = DIRECTION.LEFT
 
     # checks if the current position of pacman is either a dot, big dot or free
-    def is_valid(self,maze, x, y):
+    def is_valid(self, maze, x, y):
         if x >= 0 and x < 30:
             is_dot = maze.maze[y][x] == Map.D
             is_big_dot = maze.maze[y][x] == Map.BD
@@ -24,8 +23,8 @@ class Player():
             return (is_dot or is_free or is_big_dot)
         return True
 
-
-    # checks collision with pacman and obstacles returns false if there is a collision and true otherwise
+    # checks collision with pacman and obstacles returns false
+    # if there is a collision and true otherwise
     def check_collision(self, maze, dx, dy, tile_width, tile_height):
         direct_x = [1, 0, -1, 0, 1, 1, -1, -1]
         direct_y = [0, 1, 0, -1, -1, 1, -1, 1]
@@ -44,7 +43,7 @@ class Player():
 
     def draw(self, screen, counter):
         radius = 30 // 2
-        pos = (self.x - radius , self.y - radius)
+        pos = (self.x - radius, self.y - radius)
         image = pygame.transform.scale(self.sprite[counter // 5], (35, 35))
         if self.direction == DIRECTION.UP:
             screen.blit(pygame.transform.rotate(image, 270), pos)

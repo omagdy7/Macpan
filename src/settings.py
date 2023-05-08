@@ -4,6 +4,7 @@ class Settings():
         self.height = 990
         self.fps = 60
         self.debug = True
+        self.sound = False
 
 
 settings = Settings()
