@@ -118,4 +118,4 @@ class Map():
             for j in range(cols):
                 pos = (j * self.line_horizontal, i * self.line_vertical)
                 self.draw_wall(screen, self.maze[i][j], pos)
-                # pygame.draw.rect(screen, 'red', (pos[0], pos[1], 32, 32), 2)
+

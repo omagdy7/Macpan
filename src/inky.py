@@ -40,7 +40,11 @@ class Inky(Ghost):
 
     @override
     def get_default_tile(self):
-        return (2 * 30 + 15, 30 * 30 + 15)
+        return (27 * 30 + 15, 2 * 30 + 15)
+
+    @override
+    def get_intial_tile(self):
+        return (13 * 30 + 15, 12 * 30 + 15)
 
     def get_target(self, inter_tile, blinky):
         target = (max(inter_tile[0] - (blinky.x - inter_tile[0]) % 900, 0),
@@ -48,7 +52,7 @@ class Inky(Ghost):
         return target
 
     @override
-    def get_next_move(self, pacman, maze, screen, blinky):
+    def get_next_move(self, game_state, screen):
         default_tile = self.get_default_tile()
 
         dx = [1, 0, -1, 0]
@@ -67,16 +71,16 @@ class Inky(Ghost):
         if self.last_move == 3:
             forbidden = 1
 
-        inter_tile = self.get_intermediate_tile(pacman)
-        target = self.get_target(inter_tile, blinky)
+        inter_tile = self.get_intermediate_tile(game_state.pacman)
+        target = self.get_target(inter_tile, game_state.blinky)
 
         rand_pos = (0, 0)
 
-        if pacman.powerup:
+        if game_state.pacman.powerup and self.mode != MODE.EATEN:
             self.mode = MODE.FRIGHETENED
             rand_pos = random.randint(0, 900), random.randint(0, 990)
 
-        if pacman.powerup is False and self.mode == MODE.FRIGHETENED:
+        if game_state.pacman.powerup is False and self.mode == MODE.FRIGHETENED:
             self.mode = MODE.CHASING
 
         if settings.debug:
@@ -87,7 +91,7 @@ class Inky(Ghost):
             if i != forbidden:
                 nx = self.x + dx[i] * self.speed
                 ny = self.y + dy[i] * self.speed
-                if self.check_collision(nx, ny, 30, 30, maze):
+                if self.check_collision(nx, ny, 30, 30, game_state.map.maze):
                     if self.mode == MODE.SCATTERED:
                         ret[i] = self.heuristic(
                             (nx, ny), default_tile[0], default_tile[1])
@@ -97,6 +101,10 @@ class Inky(Ghost):
                     elif self.mode == MODE.CHASING:
                         ret[i] = self.heuristic(
                             (nx, ny), target[0], target[1])
+                    elif self.mode == MODE.EATEN:
+                        pos = self.get_intial_tile()
+                        self.x = pos[0]
+                        self.y = pos[1]
 
         min_h = min(ret)
 

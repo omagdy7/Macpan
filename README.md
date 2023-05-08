@@ -33,7 +33,8 @@ python3 macpan.py
 
 - [X] Add scattered mode for the ghosts
 - [X] Add firghtened mode for the ghosts
-- [ ] Add powerups
+- [X] Add Eaten mode for the ghosts
+- [X] Add powerups
 - [ ] Setup a menu for the game
 - [ ] Setup a simple score system
 - [ ] Setup a proper sfx/audio for the game
