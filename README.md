@@ -26,17 +26,19 @@ python3 macpan.py
 - [X] Add the Algorithm for Pinky (Normal A* + 4 spaces ahead of pacman)
 - [X] Add the ghosts in the game
 - [X] Setup the sprite animation for the ghosts
-- [ ] Add the Algorithm for Inky (Ambush)
-- [ ] Add the Algorithm for Clyde (Same as Blinky excepts when he gets 8 tiles close to pacman he retreats, So he is basically useless)
+- [X] Add the Algorithm for Clyde (Same as Blinky excepts when he gets 8 tiles close to pacman he retreats, So he is basically useless)
+- [X] Add the Algorithm for Inky (Ambush)
 
 ## Optional
 
+- [X] Add scattered mode for the ghosts
+- [X] Add firghtened mode for the ghosts
+- [X] Add Eaten mode for the ghosts
+- [X] Add powerups
 - [ ] Setup a menu for the game
 - [ ] Setup a simple score system
 - [ ] Setup a proper sfx/audio for the game
-- [ ] Add powerups
-- [ ] Add firghtening mode for the ghosts
 
-# EXTRA BONUS
+## EXTRA BONUS
 
 - [ ] Make a nueral network agent that fully plays the game alone using reinforcment learning and PyTorch

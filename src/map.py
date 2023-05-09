@@ -3,17 +3,15 @@ import math
 import settings as Settings
 
 
-H = 1
-V = 2
-D = 4
-BD = 8
-TR = 16
-TL = 32
-BL = 64
-BR = 128
-G = 256
-LP = 512
-RP = 1024
+H = 1  # Horitoznal wall
+V = 2  # Vertical wall
+D = 4  # Dot
+BD = 8  # Big Dot
+TR = 16  # TopRight wall
+TL = 32  # TopLeft wall
+BL = 64  # BottomLeft wall
+BR = 128  # BottomrRight wall
+G = 256  # Ghost
 
 PI = math.pi
 
@@ -21,7 +19,7 @@ PI = math.pi
 class Map():
     def __init__(self):
         self.maze = [
-            [TL, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H,H, H, H, H, H, H, H, H, H, H, H, H, H, TR],
+            [TL, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, TR],
             [V, TL, H, H, H, H, H, H, H, H, H, H, H, H, TR, TL, H, H, H, H, H, H, H, H, H, H, H, H, TR, V],
             [V, V, D, D, D, D, D, D, D, D, D, D, D, D, V, V, D, D, D, D, D, D, D, D, D, D, D, D, V, V],
             [V, V, D, TL, H, H, TR, D, TL, H, H, H, TR, D, V, V, D, TL, H, H, H, TR, D, TL, H, H, TR, D, V, V],
@@ -54,7 +52,7 @@ class Map():
             [V, V, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, V, V],
             [V, BL, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, BR, V],
             [BL, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, H, BR]
-        ] 
+        ]
         self.dot_color = (255, 255, 255)  # white
         self.small_dot_radius = 4
         self.big_dot_radius = 8
@@ -62,9 +60,6 @@ class Map():
         self.line_vertical = Settings.settings.height // len(self.maze)
         self.line_horizontal = Settings.settings.width // len(self.maze[0])
         self.line_stroke = 1
-
-    def consturct_map(self):
-        pass
 
     def draw_wall(self, screen, flag, pos):
         if flag & V:
@@ -123,4 +118,4 @@ class Map():
             for j in range(cols):
                 pos = (j * self.line_horizontal, i * self.line_vertical)
                 self.draw_wall(screen, self.maze[i][j], pos)
-                # pygame.draw.rect(screen, 'red', (pos[0], pos[1], 32, 32), 2)
+
