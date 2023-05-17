@@ -31,7 +31,6 @@ class Player():
             if is_dot:
                 game_state.score += 10
 
-
             if is_big_dot:
                 self.powerup = True
                 self.timer = Timer(5 * 1000)
