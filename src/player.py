@@ -6,7 +6,9 @@ import pygame
 
 
 class Player():
-    def __init__(self, sprite_sheet):
+
+    def __init__(self, sprite_sheet, settings):
+        self.settings = settings
         self.x = 30 * 17 - 15
         self.y = 30 * 25 - 15
         self.sprite_sheet = sprite_sheet
@@ -18,6 +20,7 @@ class Player():
 
     # checks if the current position of pacman is either a dot, big dot or free
     def is_valid(self, game_state, x, y):
+
         if x >= 0 and x < 30:
             is_dot = game_state.map.maze[y][x] == Map.D
             is_big_dot = game_state.map.maze[y][x] == Map.BD
@@ -27,6 +30,8 @@ class Player():
                 game_state.food += 1
             if is_dot:
                 game_state.score += 10
+
+
             if is_big_dot:
                 self.powerup = True
                 self.timer = Timer(5 * 1000)
@@ -53,10 +58,14 @@ class Player():
         return True
 
     def draw(self, screen, counter):
+        voice = pygame.mixer.Channel(2)
+        Soundpowerup = pygame.mixer.Sound('../assets/sfx/power_pellet.wav')
         if self.timer is not None:
             elapsed_time = pygame.time.get_ticks() - self.timer.start
             if elapsed_time > self.timer.duration:
                 self.powerup = False
+
+
 
         radius = 30 // 2
         pos = (self.x - radius, self.y - radius)
@@ -67,7 +76,12 @@ class Player():
             image = pygame.transform.scale(
                 self.sprite[sprite_sheet[self.direction.value]], (40, 40))
             screen.blit(image, pos)
+            if self.settings.sound:
+                if not (voice.get_busy()):
+                     voice.play(Soundpowerup)
+
         else:
+            voice.stop()
             self.sprite = get_sprites(self.sprite_sheet)
             image = pygame.transform.scale(self.sprite[counter // 5], (35, 35))
             if self.direction == DIRECTION.UP:

@@ -9,8 +9,8 @@ from ghost import Ghost
 
 
 class Inky(Ghost):
-    def __init__(self, sprite_sheet, x, y):
-        super().__init__(sprite_sheet, "orange", x, y)
+    def __init__(self, sprite_sheet, x, y,settings):
+        super().__init__(sprite_sheet, "orange", x, y,settings)
 
     def get_intermediate_tile(self, pacman):
         if pacman.direction == DIRECTION.UP:
@@ -83,7 +83,7 @@ class Inky(Ghost):
         if game_state.pacman.powerup is False and self.mode == MODE.FRIGHETENED:
             self.mode = MODE.CHASING
 
-        if settings.debug:
+        if self.settings.debug:
             pygame.draw.line(screen, self.color, (target),
                              (self.x, self.y), 1)
 
