@@ -2,10 +2,10 @@ import pygame
 import sys
 
 from GUIbutton import Button, ToggleSwitch
-from src.game import Game
+from game import Game
 import ctypes
 
-from src.settings import Settings, settings
+from settings import Settings, settings
 
 # icon on taskbar
 
@@ -32,33 +32,6 @@ def get_font(size, number):  # Returns Press-Start-2P in the desired size
         return pygame.font.Font("../assets/PAC-FONT.TTF", size)
 
 
-# def play():
-#     while True:
-#         PLAY_MOUSE_POS = pygame.mouse.get_pos()
-#
-#         SCREEN.fill("black")
-#
-#         PLAY_TEXT = get_font(45).render("This is the PLAY screen.", True, "White")
-#         PLAY_RECT = PLAY_TEXT.get_rect(center=(640, 260))
-#         SCREEN.blit(PLAY_TEXT, PLAY_RECT)
-#
-#         PLAY_BACK = Button(image=None, pos=(640, 460),
-#                            text_input="BACK", font=get_font(75), base_color="White", hovering_color="Green")
-#
-#         PLAY_BACK.changeColor(PLAY_MOUSE_POS)
-#         PLAY_BACK.update(SCREEN)
-#
-#         for event in pygame.event.get():
-#             if event.type == pygame.QUIT:
-#                 pygame.quit()
-#                 sys.exit()
-#             if event.type == pygame.MOUSEBUTTONDOWN:
-#                 if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
-#                     main_menu()
-#
-#         pygame.display.update()
-
-## Todo options sound options  here ??
 def options():
     while True:
         OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
@@ -73,21 +46,22 @@ def options():
                               text_input="BACK", font=get_font(75, 1), base_color="white", hovering_color="yellow")
 
         Debug_Mode = ToggleSwitch(image=pygame.image.load('../assets/Quit Rect.png'), pos=(300, 300),
-                                  text_input="Debug Mode", font=get_font(20, 1), base_color="Black",
+                                  text_input="Debug Mode is OFF", font=get_font(20, 1), base_color="Black",
                                   hovering_color="cyan")
 
         Sound_Mode = ToggleSwitch(image=pygame.image.load('../assets/Quit Rect.png'), pos=(900, 300),
                                   text_input="Sound  ", font=get_font(20, 1), base_color="Black",
                                   hovering_color="cyan")
 
-        # Debug_Mode_RECT = Debug_Mode.get_rect(center=(640, 150))
-        # SCREEN.blit(Debug_Mode_RECT,Debug_Mode)
+        # Debug_Mode_RECT = Debug_Mode.text.get_rect(center=(640, 150))
 
         OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
         OPTIONS_BACK.update(SCREEN)
-        Debug_Mode.changeColor(OPTIONS_MOUSE_POS)
+        # Debug_Mode.changetext(OPTIONS_MOUSE_POS)
+        # Debug_Mode.changeColor(OPTIONS_MOUSE_POS)
         Debug_Mode.update(SCREEN)
-        Sound_Mode.changeColor(OPTIONS_MOUSE_POS)
+        #
+        # #Sound_Mode.changeColor(OPTIONS_MOUSE_POS)
         Sound_Mode.update(SCREEN)
 
         for event in pygame.event.get():
@@ -97,24 +71,33 @@ def options():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
                     main_menu()
+                    pygame.display.update()
                 elif Debug_Mode.checkForInput(OPTIONS_MOUSE_POS):
-                    if lolsettings.debug :
+                    if lolsettings.debug:
                         lolsettings.debug = False
-                        Debug_Mode.image = (pygame.image.load('../assets/Quit Rect.png'))
+                        # Debug_Mode.update_image2(pygame.image.load('../assets/Quit Rect.png'))
+                        # pygame.display.update()
+                        Debug_Mode.changetext1()
                         Debug_Mode.update(SCREEN)
-                        options()
+                        print(Debug_Mode.text_input)
+                        print("Debug State  :")
+                        print(lolsettings.debug)
 
                     else:
                         lolsettings.debug = True
-                        Debug_Mode.image = (pygame.image.load('../assets/greenboxz.png'))
+                        Debug_Mode.changetext2()
                         Debug_Mode.update(SCREEN)
+                        pygame.display.update()
+                        print("Debug State  :")
+                        print(lolsettings.debug)
+
                 elif Sound_Mode.checkForInput(OPTIONS_MOUSE_POS):
-                    if lolsettings.sound :
-                        lolsettings.sound=False
+                    if lolsettings.sound:
+                        lolsettings.sound = False
+                        print(lolsettings.sound)
                     else:
                         lolsettings.sound = True
-
-
+                        print(lolsettings.sound)
         pygame.display.update()
 
 
@@ -149,7 +132,6 @@ def main_menu():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
-                    # play()
                     game = Game(lolsettings)
                     game.run()
                 if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):

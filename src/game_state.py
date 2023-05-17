@@ -32,7 +32,7 @@ class GameState():
         self.is_pacman_alive = True
 
     def reset(self, sprites ,settings):
-        self.pacman = Player(sprites[0])
+        self.pacman = Player(sprites[0],settings)
         self.blinky = Blinky(sprites[1], 12 * TILE_WIDTH +
                              15, 12 * TILE_HEIGHT + 15,settings)
         self.pinky = Pinky(sprites[2], 11 * TILE_WIDTH +
