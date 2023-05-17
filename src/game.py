@@ -154,6 +154,7 @@ class Game():
         pygame.time.set_timer(timer_event, 1000 * 10, 1)
 
         game_state = GameState(sprites, self.settings)
+        self.score(screen,game_state.score,WIDTH,HEIGHT)
 
         # Set the pacman velocity
         dx = 0
@@ -289,7 +290,7 @@ class Game():
                 self.show_gameover_screen(
                     screen, game_state, sprites)
                 game_state.is_pacman_alive = True
-                self.score( screen, game_state)
+
             else:
                 # Update the screen
                 pygame.display.flip()
