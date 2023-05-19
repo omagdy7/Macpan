@@ -8,8 +8,8 @@ import math
 
 
 class Clyde(Ghost):
-    def __init__(self, sprite_sheet, x, y):
-        super().__init__(sprite_sheet, "cyan", x, y)
+    def __init__(self, sprite_sheet, x, y,settings):
+        super().__init__(sprite_sheet, "cyan", x, y,settings)
 
     def is_eight_tiles_away(self, pacman):
         tile_width = 30
@@ -49,7 +49,7 @@ class Clyde(Ghost):
         if game_state.pacman.powerup is False and self.mode == MODE.FRIGHETENED:
             self.mode = MODE.CHASING
 
-        if settings.debug:
+        if self.settings.debug:
             pygame.draw.line(screen, self.color, (game_state.pacman.x, game_state.pacman.y),
                              (self.x, self.y), 1)
 
@@ -68,13 +68,13 @@ class Clyde(Ghost):
                         if self.is_eight_tiles_away(game_state.pacman):
                             ret[i] = self.heuristic(
                                 (nx, ny), bottom_left_corner[0], bottom_left_corner[1])
-                            if settings.debug:
+                            if self.settings.debug:
                                 pygame.draw.line(screen, self.color, (bottom_left_corner),
                                                  (self.x, self.y), 1)
                         else:
                             ret[i] = self.heuristic(
                                 (nx, ny), game_state.pacman.x, game_state.pacman.y)
-                            if settings.debug:
+                            if self.settings.debug:
                                 pygame.draw.line(screen, self.color, (game_state.pacman.x, game_state.pacman.y),
                                                  (self.x, self.y), 1)
                     elif self.mode == MODE.EATEN:

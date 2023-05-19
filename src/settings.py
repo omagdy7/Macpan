@@ -1,10 +1,9 @@
 class Settings():
-    def __init__(self):
-        self.width = 900
-        self.height = 990
-        self.fps = 60
-        self.debug = False
-        self.sound = False
+    width = 900
+    height = 990
+    fps = 60
+    debug = False
+    sound = False
 
 
 settings = Settings()

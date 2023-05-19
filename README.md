@@ -8,7 +8,7 @@
 
 ```bash
 cd src
-python3 macpan.py
+python3 Testfunction.py
 ```
 
 # TODO

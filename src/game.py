@@ -1,3 +1,7 @@
+import os
+import sys
+import time
+
 from direction import DIRECTION
 from game_state import GameState
 from mode import MODE
@@ -7,12 +11,12 @@ import pygame
 
 
 class Game():
-    def __init__(self):
-        self.settings = settings
+    def __init__(self, lolsettings):
+        self.settings = lolsettings
 
     def show_gameover_screen(self, screen, game_state, sprites):
         font = pygame.font.SysFont(None, 64)
-
+        self.score(screen, game_state.score, 200, 800)
         # Render the "Game Over" text to a surface
         game_over_text_1 = font.render(
             "Game Over", True, (255, 255, 255))
@@ -21,9 +25,9 @@ class Game():
 
         # Blit the "Game Over" text onto the screen
         text_rect_1 = game_over_text_1.get_rect(
-            center=(WIDTH/2, HEIGHT/2 - 75))
+            center=(WIDTH / 2, HEIGHT / 2 - 75))
         text_rect_2 = game_over_text_2.get_rect(
-            center=(WIDTH/2, HEIGHT/2))
+            center=(WIDTH / 2, HEIGHT / 2))
 
         screen.blit(game_over_text_1, text_rect_1)
         screen.blit(game_over_text_2, text_rect_2)
@@ -44,31 +48,52 @@ class Game():
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_q:
                     game_state.game_over = True
                     quit_game = True
-                    break
+                    pygame.quit()
+                    os.system("python MacPan.py 1")
+                    exit()
                 elif event.type == pygame.QUIT:
                     game_state.game_over = True
                     quit_game = True  # Set the flag to True to break out of both loops
                     break
 
+    def score(self, screen, text, POS1, POS2):
+        font = pygame.font.Font('../assets/PressStart2P-Regular.ttf', 21)
+
+        wining_text_123 = font.render(
+            "Score", True, (255, 255, 255))
+
+        # Render the "Game Over" text to a surface
+        wining_text_12 = font.render(
+            str(text), True, (255, 255, 255))
+
+        # Blit the "Game Over" text onto the screen
+        text_rect_12 = wining_text_12.get_rect(
+            center=(POS1 / 2, POS2 / 2))
+
+        text_rect_123 = wining_text_123.get_rect(
+            center=(POS1 / 2, ((POS2 / 2) - 50)))
+
+        screen.blit(wining_text_12, text_rect_12)
+        screen.blit(wining_text_123, text_rect_123)
+
+        # Update the display
+        pygame.display.flip()
+
     def show_wining_screen(self, screen, game_state, sprites):
         font = pygame.font.SysFont(None, 64)
 
+        self.score(screen, game_state.score, 200, 800)
         # Render the "Game Over" text to a surface
         wining_text_1 = font.render(
             "Congratulation You Won!!", True, (255, 255, 255))
         wining_text_2 = font.render(
             "Press R to play again or Q to quit", True, (255, 255, 255))
 
-        text_rect_1 = wining_text_1.get_rect(
-            center=(WIDTH/2, HEIGHT/2 - 75))
-        text_rect_2 = wining_text_2.get_rect(
-            center=(WIDTH/2, HEIGHT/2))
-
         # Blit the "Game Over" text onto the screen
         text_rect_1 = wining_text_1.get_rect(
-            center=(WIDTH/2, HEIGHT/2))
+            center=(WIDTH / 2, HEIGHT / 2))
         text_rect_2 = wining_text_2.get_rect(
-            center=(WIDTH/2, HEIGHT/2 + 100))
+            center=(WIDTH / 2, HEIGHT / 2 + 100))
         screen.blit(wining_text_1, text_rect_1)
         screen.blit(wining_text_2, text_rect_2)
 
@@ -88,14 +113,16 @@ class Game():
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_q:
                     game_state.game_over = True
                     quit_game = True
-                    break
+                    pygame.quit()
+                    os.system("python MacPan.py 1")
+                    exit()
                 elif event.type == pygame.QUIT:
                     game_state.game_over = True
                     quit_game = True  # Set the flag to True to break out of both loops
                     break
 
     def reset_game(self, game_state, sprites):
-        game_state.reset(sprites)
+        game_state.reset(sprites, self.settings)
 
     def run(self):
         # Initialize Pygame
@@ -122,7 +149,8 @@ class Game():
         timer_event = pygame.USEREVENT + 1
         pygame.time.set_timer(timer_event, 1000 * 10, 1)
 
-        game_state = GameState(sprites)
+        game_state = GameState(sprites, self.settings)
+        # self.score(screen,game_state.score,WIDTH,HEIGHT)
 
         # Set the pacman velocity
         dx = 0
@@ -132,11 +160,11 @@ class Game():
         counter = 0
 
         clock = pygame.time.Clock()
-
+        pygame.mixer.set_num_channels(5)
         pygame.mixer.music.load('../assets/sfx/game_start.wav')
         siren_sound = pygame.mixer.Sound('../assets/sfx/siren_1.wav')
 
-        if settings.sound:
+        if self.settings.sound:
             pygame.mixer.music.play()
             siren_sound.play(-1)
 
@@ -145,9 +173,12 @@ class Game():
             # setting game fps
             clock.tick(settings.fps)
 
+            # self.score(screen, game_state.score,WIDTH,HEIGHT)
+
             # counter logic for cycling between pacman different sprites
             if counter < 19:
                 counter += 1
+
             else:
                 counter = 0
 
@@ -246,15 +277,20 @@ class Game():
             if game_state.food == 246:
                 self.show_wining_screen(screen, game_state, sprites)
 
-
             if not game_state.is_pacman_alive:
+                siren_sound.stop()
+                pygame.mixer.music.load('../assets/sfx/death_1.wav')
+                if self.settings.sound:
+                    pygame.mixer.music.play()
                 self.show_gameover_screen(
                     screen, game_state, sprites)
                 game_state.is_pacman_alive = True
+
             else:
+                self.score(screen, game_state.score, WIDTH, HEIGHT)
                 # Update the screen
                 pygame.display.flip()
 
         # Quit Pygame
-        print(game_state.score)
+
         pygame.quit()

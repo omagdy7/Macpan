@@ -15,32 +15,32 @@ TILE_HEIGHT = HEIGHT // len(maze.maze)
 
 
 class GameState():
-    def __init__(self, sprites):
-        self.pacman = Player(sprites[0])
+    def __init__(self, sprites, settings):
+        self.pacman = Player(sprites[0],settings)
         self.blinky = Blinky(sprites[1], 12 * TILE_WIDTH +
-                             15, 12 * TILE_HEIGHT + 15)
+                             15, 12 * TILE_HEIGHT + 15,settings)
         self.pinky = Pinky(sprites[2], 11 * TILE_WIDTH +
-                           15, 12 * TILE_HEIGHT + 15)
+                           15, 12 * TILE_HEIGHT + 15,settings)
         self.inky = Inky(sprites[3], 13 * TILE_WIDTH +
-                         15, 12 * TILE_HEIGHT + 15)
+                         15, 12 * TILE_HEIGHT + 15,settings)
         self.clyde = Clyde(sprites[4], 14 * TILE_WIDTH +
-                           15, 12 * TILE_HEIGHT + 15)
+                           15, 12 * TILE_HEIGHT + 15,settings)
         self.map = Map.Map()
         self.food = 0
         self.game_over = False
         self.score = 0
         self.is_pacman_alive = True
 
-    def reset(self, sprites):
-        self.pacman = Player(sprites[0])
+    def reset(self, sprites ,settings):
+        self.pacman = Player(sprites[0],settings)
         self.blinky = Blinky(sprites[1], 12 * TILE_WIDTH +
-                             15, 12 * TILE_HEIGHT + 15)
+                             15, 12 * TILE_HEIGHT + 15,settings)
         self.pinky = Pinky(sprites[2], 11 * TILE_WIDTH +
-                           15, 12 * TILE_HEIGHT + 15)
+                           15, 12 * TILE_HEIGHT + 15,settings)
         self.inky = Inky(sprites[3], 13 * TILE_WIDTH +
-                         15, 12 * TILE_HEIGHT + 15)
+                         15, 12 * TILE_HEIGHT + 15,settings)
         self.clyde = Clyde(sprites[4], 14 * TILE_WIDTH +
-                           15, 12 * TILE_HEIGHT + 15)
+                           15, 12 * TILE_HEIGHT + 15,settings)
         self.map = Map.Map()
         self.food = 0
         self.game_over = False

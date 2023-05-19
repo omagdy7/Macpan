@@ -9,8 +9,8 @@ from ghost import Ghost
 
 
 class Pinky(Ghost):
-    def __init__(self, sprite_sheet, x, y):
-        super().__init__(sprite_sheet, "pink", x, y)
+    def __init__(self, sprite_sheet, x, y,settings):
+        super().__init__(sprite_sheet, "pink", x, y,settings)
 
     def get_four_tiles_ahead_of_pacman(self, pacman):
         if pacman.direction == DIRECTION.UP:
@@ -95,7 +95,7 @@ class Pinky(Ghost):
                         pos = self.get_intial_tile()
                         self.x = pos[0]
                         self.y = pos[1]
-                    if settings.debug:
+                    if self.settings.debug:
                         pygame.draw.line(screen, self.color, (new_target),
                                          (self.x, self.y), 1)
 

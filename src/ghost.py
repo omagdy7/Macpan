@@ -17,7 +17,7 @@ sprite_sheet = [2, 0, 3, 1]
 
 
 class Ghost():
-    def __init__(self, sprite_sheet, color, x, y):
+    def __init__(self, sprite_sheet, color, x, y ,lol):
         self.x = x
         self.y = y
         self.sprite_sheet = sprite_sheet
@@ -28,6 +28,7 @@ class Ghost():
         self.speed = 3
         self.timer = None
         self.mode = MODE.SCATTERED
+        self.settings = lol
 
     def in_bounds(self, pos):
         (x, y) = pos
@@ -69,14 +70,19 @@ class Ghost():
         return True
 
     def check_pacman_collision(self, game_state):
+        voiceofdot2 = pygame.mixer.Channel(4)
+        dotpickup = pygame.mixer.Sound('../assets/sfx/eat_ghost.wav')
+
         if game_state.pacman.powerup and abs(game_state.pacman.x - self.x) <= 30 and abs(game_state.pacman.y - self.y) <= 30:
             initial_position = self.get_intial_tile()
             self.mode = MODE.EATEN
             self.timer = Timer(2 * 1000)
-            time.sleep(1)
+            time.sleep(0.3)
             game_state.score += 200
             self.x = initial_position[0]
             self.y = initial_position[1]
+            if self.settings.sound:
+                voiceofdot2.play(dotpickup)
         elif not game_state.pacman.powerup and abs(game_state.pacman.x - self.x) <= 30 and abs(game_state.pacman.y - self.y) <= 30:
             if abs(game_state.pacman.x - self.x) <= 30 and abs(game_state.pacman.y - self.y) <= 30:
                 game_state.is_pacman_alive = False
@@ -116,7 +122,7 @@ class Ghost():
                         pos = self.get_intial_tile()
                         self.x = pos[0]
                         self.y = pos[1]
-                    if settings.debug:
+                    if self.settings.debug:
                         pygame.draw.line(screen, self.color, (game_state.pacman.x, game_state.pacman.y),
                                          (self.x, self.y), 1)
 
