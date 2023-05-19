@@ -1,7 +1,7 @@
 import pygame
 import sys
 
-from GUIbutton import Button, ToggleSwitch
+from GUIbutton import Button
 from game import Game
 import ctypes
 
@@ -45,23 +45,17 @@ def options():
         OPTIONS_BACK = Button(image=None, pos=(640, 520),
                               text_input="BACK", font=get_font(75, 1), base_color="white", hovering_color="yellow")
 
-        Debug_Mode = ToggleSwitch(image=pygame.image.load('../assets/Quit Rect.png'), pos=(300, 300),
-                                  text_input="Debug Mode is OFF", font=get_font(20, 1), base_color="Black",
-                                  hovering_color="cyan")
+        Debug_Mode = Button(image=pygame.image.load('../assets/Quit Rect.png'), pos=(300, 300),
+                                  text_input="Debug Mode", font=get_font(20, 1), base_color="Black",
+                                  hovering_color="yellow")
 
-        Sound_Mode = ToggleSwitch(image=pygame.image.load('../assets/Quit Rect.png'), pos=(900, 300),
+        Sound_Mode = Button(image=pygame.image.load('../assets/Quit Rect.png'), pos=(900, 300),
                                   text_input="Sound  ", font=get_font(20, 1), base_color="Black",
-                                  hovering_color="cyan")
+                                  hovering_color="yellow")
 
-        # Debug_Mode_RECT = Debug_Mode.text.get_rect(center=(640, 150))
-
-        OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
+        OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS, 'BACK', 'BACK')
         OPTIONS_BACK.update(SCREEN)
-        # Debug_Mode.changetext(OPTIONS_MOUSE_POS)
-        # Debug_Mode.changeColor(OPTIONS_MOUSE_POS)
         Debug_Mode.update(SCREEN)
-        #
-        # #Sound_Mode.changeColor(OPTIONS_MOUSE_POS)
         Sound_Mode.update(SCREEN)
 
         for event in pygame.event.get():
@@ -75,28 +69,21 @@ def options():
                 elif Debug_Mode.checkForInput(OPTIONS_MOUSE_POS):
                     if lolsettings.debug:
                         lolsettings.debug = False
-                        # Debug_Mode.update_image2(pygame.image.load('../assets/Quit Rect.png'))
-                        # pygame.display.update()
-                        Debug_Mode.changetext1()
-                        Debug_Mode.update(SCREEN)
-                        print(Debug_Mode.text_input)
                         print("Debug State  :")
                         print(lolsettings.debug)
-
                     else:
                         lolsettings.debug = True
-                        Debug_Mode.changetext2()
-                        Debug_Mode.update(SCREEN)
-                        pygame.display.update()
                         print("Debug State  :")
                         print(lolsettings.debug)
 
                 elif Sound_Mode.checkForInput(OPTIONS_MOUSE_POS):
                     if lolsettings.sound:
                         lolsettings.sound = False
+                        print("Sound State  :")
                         print(lolsettings.sound)
                     else:
                         lolsettings.sound = True
+                        print("Sound State  :")
                         print(lolsettings.sound)
         pygame.display.update()
 
@@ -113,18 +100,23 @@ def main_menu():
         MENU_RECT = MENU_TEXT.get_rect(center=(640, 100))
 
         PLAY_BUTTON = Button(image=pygame.image.load("../assets/Play Rect.png"), pos=(640, 250),
-                             text_input="PLAY", font=get_font(75, 2), base_color="#d7fcd4", hovering_color="White")
+                             text_input="PLaY", font=get_font(75, 2), base_color="#d7fcd4", hovering_color="#b68f40")
         OPTIONS_BUTTON = Button(image=pygame.image.load("../assets/Options Rect.png"), pos=(640, 400),
-                                text_input="OPTIONS", font=get_font(75, 2), base_color="#d7fcd4",
-                                hovering_color="White")
+                                text_input="OPTIoNS", font=get_font(75, 2), base_color="#d7fcd4",
+                                hovering_color="#b68f40")
         QUIT_BUTTON = Button(image=pygame.image.load("../assets/Quit Rect.png"), pos=(640, 550),
-                             text_input="QUIT", font=get_font(75, 2), base_color="#d7fcd4", hovering_color="White")
+                             text_input="qUIT", font=get_font(75, 2), base_color="#d7fcd4", hovering_color="#b68f40")
 
         SCREEN.blit(MENU_TEXT, MENU_RECT)
 
-        for button in [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON]:
-            button.changeColor(MENU_MOUSE_POS)
-            button.update(SCREEN)
+        PLAY_BUTTON.changeColor(MENU_MOUSE_POS, "PLay", "PLAY")
+        PLAY_BUTTON.update(SCREEN)
+
+        OPTIONS_BUTTON.changeColor(MENU_MOUSE_POS, "oPTIoNs", "OPTIONS")
+        OPTIONS_BUTTON.update(SCREEN)
+
+        QUIT_BUTTON.changeColor(MENU_MOUSE_POS, "qUIT", "QUIT")
+        QUIT_BUTTON.update(SCREEN)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
